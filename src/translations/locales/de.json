@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "about": "Über mich",
+    "skills": "Fähigkeiten",
+    "projects": "Projekte",
+    "education": "Bildung",
+    "experience": "Erfahrung",
+    "certifications": "Zertifikate",
+    "contact": "Kontakt",
+    "cv": "Lebenslauf"
+  },
+  "hero": {
+
+    "greeting": "Hallo, ich bin",
+    "name": "Abderrahim Talibi",
+    "title": "Softwareentwickler | KI & Backend",
+    "subtitle": "Entwicklung intelligenter Anwendungen, skalierbarer Backend-Systeme und innovativer KI-Lösungen mit Fokus auf Data Science.",
+    "cta_work": "Projekte ansehen",
+    "cta_cv": "Lebenslauf laden",
+    "years_exp": "Jahre Erfahrung",
+    "ai_expert": "KI-Experte"
+  },
+  "about": {
+    "title": "Über mich",
+    "subtitle": "Innovation durch KI & Daten",
+    "description": "Ich bin Softwareentwickler mit Spezialisierung auf Data Science und Künstliche Intelligenz von der Université Moulay Ismail. Meine Leidenschaft liegt in der Entwicklung skalierbarer Systeme und intelligenter Anwendungen. Ich verbinde akademische Exzellenz mit technischem Fachwissen.",
+    "academic": "Akademischer Weg",
+    "specialization": "Data Science & KI",
+    "goals": "Berufliche Ziele",
+    "strengths": "Kernkompetenzen",
+    "backend_dev": "Backend-Entw.",
+    "scalable_systems": "Skalierbare Syst."
+  },
+  "skills": {
+    "title": "Technische Fähigkeiten",
+    "subtitle": "Spezialisierte Expertise",
+    "categories": {
+      "backend": "Backend-Entwicklung",
+      "frontend": "Frontend-Entwicklung",
+      "database": "Datenbankmanagement",
+      "devops": "DevOps & Cloud",
+      "ai": "KI & Machine Learning",
+      "datascience": "Data Science"
+    }
+  },
+  "projects": {
+    "title": "Ausgewählte Projekte",
+    "subtitle": "Software-Innovationen",
+    "description": "Entwicklung skalierbarer Lösungen und intelligenter KI-Systeme für komplexe Probleme.",
+    "view_source": "Quellcode",
+    "live_demo": "Live-Vorschau"
+  },
+  "education": {
+    "title": "Bildung",
+    "subtitle": "Akademischer Werdegang"
+  },
+  "experience": {
+    "title": "Erfahrung",
+    "subtitle": "Berufliche Meilensteine"
+  },
+  "certifications": {
+    "title": "Zertifikate & Erfolge",
+    "subtitle": "Anerkannte Exzellenz",
+    "view": "Zertifikat ansehen"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "subtitle": "Lassen Sie uns gemeinsam bauen",
+    "email_me": "E-Mail schreiben",
+    "form": {
+      "name": "Name",
+      "email": "E-Mail",
+      "subject": "Betreff",
+      "message": "Nachricht",
+      "submit": "Nachricht senden",
+      "sending": "Wird gesendet...",
+      "success": "Nachricht erfolgreich gesendet!"
+    }
+  },
+  "footer": {
+    "rights": "Alle Rechte vorbehalten."
+  }
+}

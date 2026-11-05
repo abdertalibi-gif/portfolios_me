@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "skills": "Skills",
+    "projects": "Projects",
+    "education": "Education",
+    "experience": "Experience",
+    "certifications": "Certifications",
+    "contact": "Contact",
+    "cv": "Download CV"
+  },
+  "hero": {
+
+    "greeting": "Hello, I'm",
+    "name": "Abderrahim Talibi",
+    "title": "Software Engineer | AI & Backend Developer",
+    "subtitle": "Building intelligent applications, scalable backend systems, and innovative AI solutions with a focus on data science.",
+    "cta_work": "View My Projects",
+    "cta_cv": "Download CV",
+    "years_exp": "Years Experience",
+    "ai_expert": "AI Expert"
+  },
+  "about": {
+    "title": "About Me",
+    "subtitle": "Driving Innovation through AI & Data",
+    "description": "I am a Software Engineer specializing in Data Science and Artificial Intelligence from Université Moulay Ismail. My passion lies in building scalable systems and intelligent applications that solve complex real-world problems. I combine academic excellence with technical expertise to deliver high-impact engineering solutions.",
+    "academic": "Academic Path",
+    "specialization": "Data Science & AI",
+    "goals": "Professional Goals",
+    "strengths": "Key Strengths",
+    "backend_dev": "Backend Dev",
+    "scalable_systems": "Scalable Systems"
+  },
+  "skills": {
+    "title": "Technical Skills",
+    "subtitle": "Specialized Technical Expertise",
+    "categories": {
+      "backend": "Backend Development",
+      "frontend": "Frontend Development",
+      "database": "Database Management",
+      "devops": "DevOps & Cloud",
+      "ai": "AI & Machine Learning",
+      "datascience": "Data Science"
+    }
+  },
+  "projects": {
+    "title": "Featured Projects",
+    "subtitle": "Selected Software Innovations",
+    "description": "Engineering scalable solutions and intelligent AI systems designed for complex problem-solving.",
+    "view_source": "Source Code",
+    "live_demo": "Live Preview"
+  },
+  "education": {
+    "title": "Education",
+    "subtitle": "Academic Journey"
+  },
+  "experience": {
+    "title": "Experience",
+    "subtitle": "Professional Milestones"
+  },
+  "certifications": {
+    "title": "Certifications & Achievements",
+    "subtitle": "Recognized Excellence",
+    "view": "View Certificate"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Let's Build Something Together",
+    "email_me": "Email Me",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}

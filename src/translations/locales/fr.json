@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "skills": "Compétences",
+    "projects": "Projets",
+    "education": "Éducation",
+    "experience": "Expérience",
+    "certifications": "Certifications",
+    "contact": "Contact",
+    "cv": "Télécharger CV"
+  },
+  "hero": {
+
+    "greeting": "Bonjour, je suis",
+    "name": "Abderrahim Talibi",
+    "title": "Software Engineer | AI & Backend Developer",
+    "subtitle": "Construction d'applications intelligentes, de systèmes backend évolutifs et de solutions IA innovantes avec un accent sur la science des données.",
+    "cta_work": "Voir mes projets",
+    "cta_cv": "Télécharger CV",
+    "years_exp": "Ans d'expérience",
+    "ai_expert": "Expert en IA"
+  },
+  "about": {
+    "title": "À propos",
+    "subtitle": "L'innovation par l'IA et les données",
+    "description": "Je suis un ingénieur logiciel spécialisé en Science des Données et Intelligence Artificielle de l'Université Moulay Ismail. Ma passion réside dans la construction de systèmes évolutifs et d'applications intelligentes qui résolvent des problèmes complexes du monde réel. Je combine l'excellence académique avec l'expertise technique pour fournir des solutions d'ingénierie à fort impact.",
+    "academic": "Parcours Académique",
+    "specialization": "Science des Données & IA",
+    "goals": "Objectifs Professionnels",
+    "strengths": "Points Forts",
+    "backend_dev": "Dév Backend",
+    "scalable_systems": "Systèmes Évolutifs"
+  },
+  "skills": {
+    "title": "Compétences Techniques",
+    "subtitle": "Expertise Technique Spécialisée",
+    "categories": {
+      "backend": "Développement Backend",
+      "frontend": "Développement Frontend",
+      "database": "Gestion de Bases de Données",
+      "devops": "DevOps & Cloud",
+      "ai": "IA & Machine Learning",
+      "datascience": "Science des Données"
+    }
+  },
+  "projects": {
+    "title": "Projets Phares",
+    "subtitle": "Innovations Logicielles Sélectionnées",
+    "description": "Ingénierie de solutions évolutives et de systèmes d'IA intelligents conçus pour la résolution de problèmes complexes.",
+    "view_source": "Code Source",
+    "live_demo": "Aperçu en direct"
+  },
+  "education": {
+    "title": "Éducation",
+    "subtitle": "Parcours Académique"
+  },
+  "experience": {
+    "title": "Expérience",
+    "subtitle": "Jalons Professionnels"
+  },
+  "certifications": {
+    "title": "Certifications & Réalisations",
+    "subtitle": "Excellence Reconnue",
+    "view": "Voir le certificat"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Construisons Quelque Chose Ensemble",
+    "email_me": "M'envoyer un email",
+    "form": {
+      "name": "Nom",
+      "email": "Email",
+      "subject": "Sujet",
+      "message": "Message",
+      "submit": "Envoyer le message",
+      "sending": "Envoi...",
+      "success": "Message envoyé avec succès !"
+    }
+  },
+  "footer": {
+    "rights": "Tous droits réservés."
+  }
+}
