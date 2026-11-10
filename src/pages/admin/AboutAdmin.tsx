@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { Plus, Save, Sparkles, Trash2, User } from "lucide-react";
 import type { FocusItem, LocalizedText } from "../../../shared/types";
 import { emptyLocalized } from "../../../shared/types";
@@ -7,6 +8,7 @@ import { useContent } from "../../context/ContentContext";
 import {
   Alert,
   Button,
+  ImageUploader,
   LoadingList,
   LocalizedField,
   PageHeader,
@@ -19,7 +21,12 @@ function createFocus(): FocusItem {
 
 export default function AboutAdmin() {
   const { refresh: refreshPublic } = useContent();
-  const [form, setForm] = useState<AboutInput>({ description: emptyLocalized(), focus: [] });
+  const [form, setForm] = useState<AboutInput>({
+    description: emptyLocalized(),
+    focus: [],
+    professionalTitle: emptyLocalized(),
+    profileImage: "",
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -34,6 +41,8 @@ export default function AboutAdmin() {
         setForm({
           description: { ...content.about.description },
           focus: content.about.focus.map((item) => ({ id: item.id, text: { ...item.text } })),
+          professionalTitle: content.about.professionalTitle || emptyLocalized(),
+          profileImage: content.about.profileImage || "",
         });
       })
       .catch((loadError) => {
@@ -69,8 +78,13 @@ export default function AboutAdmin() {
     }
     setSaving(true);
     try {
-      await api.updateAbout({ description: form.description, focus: cleaned });
-      setNotice("Présentation mise à jour sur le portfolio.");
+      await api.updateAbout({
+        description: form.description,
+        focus: cleaned,
+        professionalTitle: form.professionalTitle,
+        profileImage: form.profileImage,
+      });
+      setNotice("Présentation mise à jour avec succès sur le portfolio.");
       await refreshPublic();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "Échec de l'enregistrement");
@@ -80,11 +94,16 @@ export default function AboutAdmin() {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-5"
+    >
       <PageHeader
         eyebrow="Contenu"
-        title="À propos"
-        description="Modifiez votre présentation personnelle et les points forts affichés sur le portfolio, dans les quatre langues."
+        title="Présentation personnelle"
+        description="Modifiez votre texte de présentation et les points clés affichés sur la section « À propos »."
       />
 
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
@@ -94,48 +113,58 @@ export default function AboutAdmin() {
         <LoadingList rows={3} />
       ) : (
         <form onSubmit={submit} className="space-y-5">
-          <Panel className="p-5 sm:p-6">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#0F7DB8]/20 bg-[#0F7DB8]/10">
-                <User className="h-5 w-5 text-[#2196D3]" />
-              </div>
-              <div>
-                <h2 className="text-sm font-black text-white">Présentation personnelle</h2>
-                <p className="text-xs text-slate-500">Le paragraphe principal de la section « À propos ».</p>
-              </div>
+          {/* Section 1: Biographie / Description */}
+          <Panel className="p-4 sm:p-5">
+            <div className="mb-4">
+              <h2 className="text-sm font-bold text-white">
+                Biographie principale
+              </h2>
+              <p className="text-xs text-slate-400">
+                Texte principal présentant votre parcours et vos expertises.
+              </p>
             </div>
+
             <LocalizedField
-              label="Présentation"
+              label="Texte de présentation"
               required
               multiline
-              rows={6}
+              rows={5}
               value={form.description}
               onChange={(description) => setForm({ ...form, description })}
-              placeholder="Je suis un ingénieur logiciel spécialisé en…"
+              placeholder="Ingénieur logiciel spécialisé en développement full-stack et IA..."
             />
           </Panel>
 
-          <Panel className="p-5 sm:p-6">
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#F28C28]/20 bg-[#F28C28]/10">
-                  <Sparkles className="h-5 w-5 text-[#F5A65B]" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-black text-white">Points de focus</h2>
-                  <p className="text-xs text-slate-500">Affichés dans la colonne de droite de la section.</p>
-                </div>
+          {/* Section 2: Points de focus */}
+          <Panel className="p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-sm font-bold text-white">
+                  Points forts & Domaines d'intérêt
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Affichés comme des éléments clés dans la section.
+                </p>
               </div>
-              <Button type="button" variant="secondary" icon={Plus} onClick={() => setForm({ ...form, focus: [...form.focus, createFocus()] })}>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                icon={Plus}
+                onClick={() => setForm({ ...form, focus: [...form.focus, createFocus()] })}
+              >
                 Ajouter un point
               </Button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {form.focus.map((item, index) => (
-                <div key={item.id} className="admin-panel p-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                <div
+                  key={item.id}
+                  className="rounded-lg border border-white/10 bg-white/[0.02] p-3.5 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-blue-400 uppercase tracking-wider">
                       Point {index + 1}
                     </span>
                     <button
@@ -143,33 +172,62 @@ export default function AboutAdmin() {
                       onClick={() =>
                         setForm({ ...form, focus: form.focus.filter((entry) => entry.id !== item.id) })
                       }
-                      className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-500/10 hover:text-red-300"
+                      className="rounded p-1 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
                       aria-label="Supprimer le point"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
                   <LocalizedField
-                    label="Texte"
+                    label="Contenu du point"
                     value={item.text}
                     onChange={(text) => updateFocus(item.id, text)}
-                    placeholder="Parcours Académique"
+                    placeholder="Expertise en Vision par Ordinateur & Modèles LLM..."
                   />
                 </div>
               ))}
               {form.focus.length === 0 && (
-                <p className="rounded-xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-slate-500">
-                  Aucun point de focus. Ajoutez-en au moins un.
-                </p>
+                <div className="rounded-lg border border-dashed border-white/10 py-6 text-center text-xs text-slate-400">
+                  Aucun point de focus. Cliquez sur « Ajouter un point » ci-dessus.
+                </div>
               )}
             </div>
           </Panel>
 
-          <div className="flex justify-end">
-            <Button type="submit" icon={Save} loading={saving}>Enregistrer les modifications</Button>
+          {/* Section 3: Titre professionnel et photo */}
+          <Panel className="p-4 sm:p-5">
+            <div className="mb-4">
+              <h2 className="text-sm font-bold text-white">
+                Informations complémentaires
+              </h2>
+              <p className="text-xs text-slate-400">
+                Titre d'en-tête et photo de profil.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <LocalizedField
+                label="Titre professionnel"
+                value={form.professionalTitle || emptyLocalized()}
+                onChange={(professionalTitle) => setForm({ ...form, professionalTitle })}
+                placeholder="Software Engineer & AI Developer"
+              />
+
+              <ImageUploader
+                value={form.profileImage || ""}
+                onChange={(profileImage) => setForm({ ...form, profileImage })}
+                label="Photo de profil"
+              />
+            </div>
+          </Panel>
+
+          <div className="flex justify-end pt-2">
+            <Button type="submit" icon={Save} loading={saving}>
+              Enregistrer les modifications
+            </Button>
           </div>
         </form>
       )}
-    </div>
+    </motion.div>
   );
 }

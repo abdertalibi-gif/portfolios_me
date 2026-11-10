@@ -13,14 +13,23 @@ import {
 } from "lucide-react";
 import type { AdminStats } from "../../../shared/types";
 import { api } from "../../services/api";
-import { Alert, Badge, Button, LoadingList, PageHeader, Panel, Skeleton } from "../../components/admin/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  LoadingList,
+  PageHeader,
+  Panel,
+  Skeleton,
+  cn,
+} from "../../components/admin/ui";
 
 const statConfig = [
-  { key: "projects", label: "Projets", icon: Briefcase, accent: "text-[#6FC3F0]", bg: "bg-[#0F7DB8]/10", to: "/admin/projects" },
-  { key: "skills", label: "Compétences", icon: Code2, accent: "text-[#F5A65B]", bg: "bg-[#F28C28]/10", to: "/admin/skills" },
-  { key: "certifications", label: "Certifications", icon: Award, accent: "text-emerald-300", bg: "bg-emerald-500/10", to: "/admin/certifications" },
-  { key: "experiences", label: "Expériences", icon: Building2, accent: "text-violet-300", bg: "bg-violet-500/10", to: "/admin/experiences" },
-  { key: "messages", label: "Messages", icon: Inbox, accent: "text-rose-300", bg: "bg-rose-500/10", to: "/admin/messages" },
+  { key: "projects", label: "Projets", path: "/admin/projects", icon: Briefcase, color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20" },
+  { key: "skills", label: "Compétences", path: "/admin/skills", icon: Code2, color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/20" },
+  { key: "certifications", label: "Certifications", path: "/admin/certifications", icon: Award, color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
+  { key: "experiences", label: "Expériences", path: "/admin/experiences", icon: Building2, color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20" },
+  { key: "messages", label: "Messages", path: "/admin/messages", icon: Inbox, color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
 ] as const;
 
 export default function Dashboard() {
@@ -33,8 +42,8 @@ export default function Dashboard() {
     setError("");
     try {
       setStats(await api.getStats());
-    } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Impossible de charger les statistiques");
+    } catch {
+      setError("Impossible de charger les statistiques du tableau de bord");
     } finally {
       setLoading(false);
     }
@@ -47,10 +56,15 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-6"
+    >
       <PageHeader
         eyebrow="Vue d'ensemble"
-        title="Bienvenue, Abderrahim"
+        title="Tableau de bord"
         description="Suivez l'activité de votre portfolio et accédez rapidement à chaque section."
         actions={
           <Button variant="secondary" icon={RefreshCw} onClick={() => void load()} loading={loading}>
@@ -61,126 +75,147 @@ export default function Dashboard() {
 
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-5">
+      {/* Metric Cards Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {statConfig.map((stat, index) => {
           const Icon = stat.icon;
           const value = stats ? (stats[stat.key] as number) : null;
+
           return (
-            <motion.div
+            <Link
               key={stat.key}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              to={stat.path}
+              className="group rounded-xl border border-white/10 bg-[#0D1730]/75 p-4 sm:p-5 hover:border-blue-500/40 hover:bg-[#121E3A] transition-all duration-150 flex flex-col justify-between"
             >
-              <Link to={stat.to} className="admin-card group block h-full p-4 transition hover:border-[#0F7DB8]/40 sm:p-5">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl border border-white/5 ${stat.bg}`}>
-                    <Icon className={`h-5 w-5 ${stat.accent}`} />
-                  </div>
-                  <ArrowUpRight className="h-4 w-4 text-slate-600 transition group-hover:text-[#2196D3]" />
+              <div className="flex items-center justify-between">
+                <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg border", stat.bg, stat.color)}>
+                  <Icon className="h-4.5 w-4.5" />
                 </div>
-                {value === null ? (
-                  <Skeleton className="h-8 w-14" />
-                ) : (
-                  <p className="text-3xl font-black tabular-nums text-white">
-                    {value}
-                    {stat.key === "messages" && stats && stats.unreadMessages > 0 && (
-                      <span className="ml-2 align-middle text-[10px] font-black uppercase tracking-wider text-[#F28C28]">
-                        {stats.unreadMessages} non lu{stats.unreadMessages > 1 ? "s" : ""}
-                      </span>
-                    )}
-                  </p>
-                )}
-                <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <ArrowUpRight className="h-4 w-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+              </div>
+
+              <div className="mt-3">
+                <div className="text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums">
+                  {value !== null ? value : <Skeleton className="h-8 w-14" />}
+                </div>
+                <p className="mt-0.5 text-xs font-semibold text-slate-400 group-hover:text-slate-300">
                   {stat.label}
                 </p>
-              </Link>
-            </motion.div>
+              </div>
+            </Link>
           );
         })}
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <Panel className="p-5 sm:p-6">
-          <div className="mb-5 flex items-center justify-between">
+      {/* Main Dual Panels: Recent Messages & Recent Projects */}
+      <div className="grid gap-5 xl:grid-cols-2">
+        {/* Messages Panel */}
+        <Panel className="p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-base font-black text-white">Derniers messages</h2>
-              <p className="mt-1 text-xs text-slate-500">Les demandes reçues via le formulaire public.</p>
+              <h2 className="text-sm font-bold text-white">
+                Derniers messages
+              </h2>
+              <p className="text-xs text-slate-400">
+                Demandes reçues via le formulaire de contact.
+              </p>
             </div>
-            <Link to="/admin/messages" className="text-xs font-bold text-[#2196D3] hover:text-[#6FC3F0]">
-              Tout voir
+            <Link
+              to="/admin/messages"
+              className="text-xs font-semibold text-blue-400 hover:text-cyan-300 transition"
+            >
+              Tout voir →
             </Link>
           </div>
 
           {loading && !stats ? (
-            <LoadingList rows={4} />
+            <LoadingList rows={3} />
           ) : stats && stats.recentMessages.length > 0 ? (
-            <div className="space-y-2">
-              {stats.recentMessages.map((message) => (
-                <Link
+            <div className="space-y-2.5">
+              {stats.recentMessages.slice(0, 5).map((message) => (
+                <div
                   key={message.id}
-                  to="/admin/messages"
-                  className="flex items-start gap-3 rounded-xl border border-transparent px-3 py-3 transition hover:border-white/10 hover:bg-white/[0.03]"
+                  className="flex items-start gap-3 rounded-lg border border-white/10 bg-white/[0.02] p-3 hover:border-white/20 transition-colors"
                 >
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0F7DB8]/10 text-xs font-black text-[#6FC3F0]">
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-xs font-bold text-cyan-400 border border-blue-500/20">
                     {message.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="truncate text-sm font-bold text-slate-200">{message.subject}</p>
-                      {!message.read && <Badge tone="orange">Nouveau</Badge>}
+                      <p className="truncate text-xs sm:text-sm font-semibold text-white">
+                        {message.subject}
+                      </p>
+                      {!message.read && <Badge tone="amber">Nouveau</Badge>}
                     </div>
-                    <p className="mt-0.5 truncate text-xs text-slate-500">
+                    <p className="mt-0.5 truncate text-[11px] text-slate-400">
                       {message.name} · {message.email}
                     </p>
                   </div>
-                  <span className="shrink-0 text-[10px] font-semibold text-slate-600">
+                  <span className="shrink-0 text-[10px] text-slate-500">
                     {new Date(message.createdAt).toLocaleDateString("fr-FR")}
                   </span>
-                </Link>
+                </div>
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 py-12 text-center">
-              <Inbox className="mb-3 h-7 w-7 text-slate-600" />
-              <p className="text-sm font-semibold text-slate-400">Aucun message pour le moment</p>
-              <p className="mt-1 text-xs text-slate-600">Les messages du formulaire de contact apparaîtront ici.</p>
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/10 py-6 text-center text-slate-400">
+              <Inbox className="mb-2 h-6 w-6 text-slate-500" />
+              <p className="text-xs font-semibold text-slate-300">Aucun message pour le moment</p>
+              <p className="mt-0.5 text-[11px] text-slate-500">
+                Les demandes des visiteurs apparaîtront ici.
+              </p>
             </div>
           )}
         </Panel>
 
-        <Panel className="p-5 sm:p-6">
-          <div className="mb-5 flex items-center justify-between">
+        {/* Projects Panel */}
+        <Panel className="p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-base font-black text-white">Projets récents</h2>
-              <p className="mt-1 text-xs text-slate-500">Statut de publication de vos projets.</p>
+              <h2 className="text-sm font-bold text-white">
+                Projets récents
+              </h2>
+              <p className="text-xs text-slate-400">
+                Statut et aperçu de vos réalisations.
+              </p>
             </div>
-            <Link to="/admin/projects" className="text-xs font-bold text-[#2196D3] hover:text-[#6FC3F0]">
-              Gérer
+            <Link
+              to="/admin/projects"
+              className="text-xs font-semibold text-blue-400 hover:text-cyan-300 transition"
+            >
+              Gérer →
             </Link>
           </div>
 
           {loading && !stats ? (
-            <LoadingList rows={4} />
-          ) : (
-            <div className="space-y-2">
-              {stats?.recentProjects.map((project) => (
+            <LoadingList rows={3} />
+          ) : stats && stats.recentProjects.length > 0 ? (
+            <div className="space-y-2.5">
+              {stats.recentProjects.slice(0, 5).map((project) => (
                 <div
                   key={project.id}
-                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 transition hover:border-white/10 hover:bg-white/[0.03]"
+                  className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.02] p-2.5 hover:border-white/20 transition-colors"
                 >
-                  <div className="h-11 w-16 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/5">
+                  <div className="h-10 w-14 shrink-0 overflow-hidden rounded-md border border-white/10 bg-[#081127]">
                     {project.image ? (
-                      <img src={project.image} alt="" className="h-full w-full object-cover" />
+                      <img
+                        src={project.image}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
-                        <Sparkles className="h-4 w-4 text-slate-600" />
+                        <Sparkles className="h-3.5 w-3.5 text-slate-500" />
                       </div>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-slate-200">{project.title.en || project.title.fr}</p>
-                    <p className="truncate text-xs text-slate-500">{project.tags.join(" · ") || "Sans tags"}</p>
+                    <p className="truncate text-xs sm:text-sm font-semibold text-white">
+                      {project.title.fr || project.title.en}
+                    </p>
+                    <p className="truncate text-[11px] text-slate-400">
+                      {project.tags.join(" · ") || "Aucun tag"}
+                    </p>
                   </div>
                   <Badge tone={project.published ? "green" : "slate"}>
                     {project.published ? "Publié" : "Brouillon"}
@@ -188,26 +223,14 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
-          )}
-
-          <div className="mt-5 rounded-xl border border-[#0F7DB8]/20 bg-[#0F7DB8]/5 p-4">
-            <p className="text-xs font-bold text-slate-300">
-              {stats ? `${stats.publishedProjects} projet(s) publié(s) sur ${stats.projects}` : "Chargement…"}
-            </p>
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/5">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-[#0F7DB8] to-[#2196D3] transition-all duration-700"
-                style={{
-                  width: stats && stats.projects > 0 ? `${(stats.publishedProjects / stats.projects) * 100}%` : "0%",
-                }}
-              />
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/10 py-6 text-center text-slate-400">
+              <Briefcase className="mb-2 h-6 w-6 text-slate-500" />
+              <p className="text-xs font-semibold text-slate-300">Aucun projet enregistré</p>
             </div>
-            <p className="mt-2 text-[11px] text-slate-500">
-              Les brouillons restent visibles uniquement dans l'administration.
-            </p>
-          </div>
+          )}
         </Panel>
       </div>
-    </div>
+    </motion.div>
   );
 }

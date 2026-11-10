@@ -48,10 +48,15 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 export type ProjectInput = Pick<Project, "title" | "description" | "tags" | "image" | "github" | "demo" | "published">;
 export type SkillCategoryInput = Pick<SkillCategory, "key" | "name">;
 export type SkillInput = Pick<Skill, "categoryId" | "name">;
-export type EducationInput = Pick<EducationItem, "degree" | "institution" | "period">;
-export type ExperienceInput = Pick<ExperienceItem, "role" | "company" | "description" | "period">;
-export type CertificationInput = Pick<Certification, "title" | "issuer" | "date" | "link" | "image">;
-export type AboutInput = { description: PortfolioContent["about"]["description"]; focus: FocusItem[] };
+export type EducationInput = Pick<EducationItem, "degree" | "institution" | "description" | "period">;
+export type ExperienceInput = Pick<ExperienceItem, "role" | "company" | "location" | "description" | "period" | "employmentType">;
+export type CertificationInput = Pick<Certification, "title" | "issuer" | "date" | "link" | "image" | "expirationDate" | "credentialId">;
+export type AboutInput = {
+  description: PortfolioContent["about"]["description"];
+  focus: FocusItem[];
+  professionalTitle?: PortfolioContent["about"]["professionalTitle"];
+  profileImage?: string;
+};
 
 export const api = {
   login: (email: string, password: string) =>

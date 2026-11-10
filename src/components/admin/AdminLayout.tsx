@@ -11,14 +11,17 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Moon,
   PhoneCall,
   Settings,
+  Sun,
   User,
   X,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../services/api";
 import { ConfirmDialog, cn } from "./ui";
+import { useTranslation } from "react-i18next";
 import "../../admin.css";
 
 const links = [
@@ -51,10 +54,12 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
     setMobileOpen(false);
@@ -84,25 +89,40 @@ export default function AdminLayout() {
     }
   };
 
-  const sidebar = (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-        <div className="h-10 w-10 overflow-hidden rounded-xl bg-gradient-to-br from-[#0F7DB8] to-[#F28C28] p-0.5">
-          <img
-            src="/assets/aistudio/photoabder_3cbc0678.jpeg"
-            alt="Abderrahim Talibi"
-            className="h-full w-full rounded-[10px] object-cover"
-          />
+  useEffect(() => {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const storedTheme = localStorage.getItem("admin-theme") as "dark" | "light" | null;
+    if (storedTheme) {
+      setTheme(storedTheme);
+      document.documentElement.setAttribute("data-theme", storedTheme);
+    } else if (prefersDark) {
+      setTheme("dark");
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("admin-theme", nextTheme);
+    document.documentElement.setAttribute("data-theme", nextTheme);
+  };
+
+  const sidebarContent = (
+    <div className="flex flex-col h-full w-full">
+      {/* Brand Header */}
+      <div className="sidebar-brand">
+        <div className="sidebar-logo">
+          <User className="h-5 w-5 text-white" />
         </div>
-        <div className="min-w-0">
-          <p className="truncate text-sm font-black tracking-tight text-white">AT Admin</p>
-          <p className="truncate text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
-            Portfolio console
-          </p>
+        <div className="min-w-0 flex-1">
+          <span className="sidebar-brand-text">AT Admin</span>
+          <p className="sidebar-brand-subtitle">Console Portfolio</p>
         </div>
       </div>
 
-      <nav className="admin-scroll flex-1 space-y-1 overflow-y-auto px-3 py-4">
+      {/* Navigation */}
+      <nav className="sidebar-nav admin-scroll">
         {links.map((link) => {
           const Icon = link.icon;
           const active = location.pathname === link.path;
@@ -110,61 +130,126 @@ export default function AdminLayout() {
             <Link
               key={link.path}
               to={link.path}
-              className={cn(
-                "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all",
-                active ? "bg-[#0F7DB8]/15 text-white" : "text-slate-400 hover:bg-white/5 hover:text-white",
-              )}
+              className={cn("sidebar-nav-item", active && "active")}
+              aria-label={link.label}
             >
-              {active && (
-                <motion.span
-                  layoutId="admin-active-link"
-                  className="absolute inset-y-2 left-0 w-1 rounded-full bg-gradient-to-b from-[#2196D3] to-[#0F7DB8]"
-                />
-              )}
               <Icon
                 className={cn(
-                  "h-4 w-4 shrink-0",
-                  active ? "text-[#2196D3]" : "text-slate-500 group-hover:text-slate-300",
+                  "sidebar-nav-icon",
+                  active ? "text-cyan-400" : "text-slate-400",
                 )}
               />
-              <span className="flex-1">{link.label}</span>
+              <span className="flex-1 truncate">{link.label}</span>
               {link.path === "/admin/messages" && unread > 0 && (
-                <span className="rounded-full bg-[#F28C28] px-2 py-0.5 text-[10px] font-black text-black">
-                  {unread}
-                </span>
+                <span className="sidebar-nav-badge">{unread}</span>
               )}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-white/10 p-3">
-        <div className="mb-3 flex items-center gap-3 rounded-xl px-2 py-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#0F7DB8]/30 bg-[#0F7DB8]/10 text-xs font-black text-[#2196D3]">
+      {/* Footer Profile & Logout */}
+      <div className="sidebar-footer">
+        <div className="sidebar-profile">
+          <div className="sidebar-profile-avatar">
             {user?.email?.slice(0, 2).toUpperCase() || "AT"}
           </div>
-          <div className="min-w-0">
-            <p className="truncate text-xs font-bold text-slate-200">{user?.email || "Administrateur"}</p>
-            <p className="text-[10px] uppercase tracking-wider text-slate-500">Session sécurisée</p>
+          <div className="sidebar-profile-info">
+            <p className="sidebar-profile-name">
+              {user?.email || "Administrateur"}
+            </p>
+            <p className="sidebar-profile-status">Session active</p>
           </div>
         </div>
+
         <button
+          type="button"
           onClick={() => setConfirmLogout(true)}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-300 transition hover:bg-red-500/10"
+          className="sidebar-logout"
+          aria-label="Déconnexion"
         >
-          <LogOut className="h-4 w-4" />
-          Déconnexion
+          <LogOut className="h-4 w-4 shrink-0" />
+          <span>Déconnexion</span>
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="admin-shell min-h-screen lg:flex">
-      <aside className="fixed inset-y-0 left-0 z-50 hidden w-72 border-r border-white/10 bg-[#070E1B]/90 backdrop-blur-xl lg:block">
-        {sidebar}
+    <div className="admin-shell" data-theme={theme}>
+      {/* Desktop In-Flow Sticky Sidebar */}
+      <aside className="admin-sidebar">
+        {sidebarContent}
       </aside>
 
+      {/* Main Content Area - margin-left prevents sidebar overlap on desktop */}
+      <div className="admin-main ml-sidebar-desktop">
+        {/* Header */}
+        <header className="admin-header">
+          <div className="header-left">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              className="header-mobile-menu lg:hidden"
+              aria-label="Ouvrir le menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <div className="header-brand">
+              <span className="header-breadcrumb">Administration</span>
+              <h2 className="header-title">
+                {titles[location.pathname] || "Administration"}
+              </h2>
+            </div>
+          </div>
+
+          <div className="header-right">
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="header-portfolio-link"
+              title="Voir le portfolio dans un nouvel onglet"
+            >
+              <span className="hidden sm:inline">Voir le portfolio</span>
+              <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+            </a>
+
+            <select
+              value={i18n.language}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              className="header-language-select"
+              aria-label="Langue"
+            >
+              <option value="fr">FR</option>
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+              <option value="ar">AR</option>
+            </select>
+
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="header-icon-btn"
+              title={theme === "dark" ? "Mode clair" : "Mode sombre"}
+              aria-label="Basculer le thème"
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-300" />}
+            </button>
+
+            <div className="header-avatar" title={user?.email || "Administrateur"}>
+              {user?.email?.slice(0, 2).toUpperCase() || "AT"}
+            </div>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main className="admin-content">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -172,73 +257,29 @@ export default function AdminLayout() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
               onClick={() => setMobileOpen(false)}
             />
             <motion.aside
-              initial={{ x: -300 }}
+              initial={{ x: -280 }}
               animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              transition={{ type: "tween", duration: 0.25 }}
-              className="fixed inset-y-0 left-0 z-50 w-72 border-r border-white/10 bg-[#070E1B] lg:hidden"
+              exit={{ x: -280 }}
+              transition={{ type: "tween", duration: 0.2 }}
+              className="fixed inset-y-0 left-0 z-50 w-[260px] border-r border-white/10 bg-[#081127] shadow-2xl lg:hidden flex flex-col"
             >
               <button
+                type="button"
                 onClick={() => setMobileOpen(false)}
-                className="absolute right-3 top-3 rounded-lg p-2 text-slate-400 hover:bg-white/5 hover:text-white"
+                className="absolute right-3 top-3.5 rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white z-10 cursor-pointer"
                 aria-label="Fermer le menu"
               >
                 <X className="h-5 w-5" />
               </button>
-              {sidebar}
+              {sidebarContent}
             </motion.aside>
           </>
         )}
       </AnimatePresence>
-
-      <div className="min-w-0 flex-1">
-        <header className="sticky top-0 z-30 border-b border-white/10 bg-[#050B16]/80 backdrop-blur-xl">
-          <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setMobileOpen(true)}
-                className="rounded-xl border border-white/10 p-2 text-slate-300 transition hover:bg-white/5 lg:hidden"
-                aria-label="Ouvrir le menu"
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Administration</p>
-                <h2 className="text-sm font-bold text-white sm:text-base">
-                  {titles[location.pathname] || "Administration"}
-                </h2>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 sm:gap-3">
-              <a
-                href="/"
-                target="_blank"
-                rel="noreferrer"
-                className="hidden items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:border-[#0F7DB8]/40 hover:text-white sm:flex"
-              >
-                Voir le portfolio
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-              <div className="h-9 w-9 overflow-hidden rounded-full border border-white/10">
-                <img
-                  src="/assets/aistudio/photoabder_3cbc0678.jpeg"
-                  alt="Administrateur"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <main className="p-4 sm:p-6 lg:p-8">
-          <Outlet />
-        </main>
-      </div>
 
       <ConfirmDialog
         open={confirmLogout}

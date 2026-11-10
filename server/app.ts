@@ -104,6 +104,7 @@ function validateProject(body: Record<string, unknown>): Omit<Project, "id" | "o
     github: asLink(body.github, "Lien GitHub"),
     demo: asLink(body.demo, "Lien démo"),
     published: asBool(body.published, true),
+    featured: asBool(body.featured, false),
   };
 }
 
@@ -127,6 +128,7 @@ function validateEducation(body: Record<string, unknown>): Omit<EducationItem, "
   return {
     degree: asLocalized(body.degree, "Diplôme", { max: 300 }),
     institution: asLocalized(body.institution, "Établissement", { max: 300 }),
+    description: body.description ? asLocalized(body.description, "Description", { max: 3000 }) : { en: "", fr: "", de: "", ar: "" },
     period: asPeriod(body.period),
   };
 }
@@ -135,8 +137,10 @@ function validateExperience(body: Record<string, unknown>): Omit<ExperienceItem,
   return {
     role: asLocalized(body.role, "Poste", { max: 200 }),
     company: asLocalized(body.company, "Entreprise", { max: 200 }),
+    location: asLocalized(body.location, "Localisation", { max: 200 }),
     description: asLocalized(body.description, "Description", { max: 3000 }),
     period: asPeriod(body.period),
+    employmentType: typeof body.employmentType === "string" ? body.employmentType.trim() : "",
   };
 }
 
@@ -147,6 +151,8 @@ function validateCertification(body: Record<string, unknown>): Omit<Certificatio
     date: asDateText(body.date, "Date"),
     link: asLink(body.link, "Lien"),
     image: asImage(body.image),
+    expirationDate: asDateText(body.expirationDate, "Date d'expiration"),
+    credentialId: asText(body.credentialId, "Identifiant de crédit", { max: 100, required: false }),
   };
 }
 
@@ -539,6 +545,8 @@ export function createApiApp(options: AppOptions = {}): express.Express {
       const about = {
         description: asLocalized(body.description, "Description", { max: 4000 }),
         focus,
+        professionalTitle: asLocalized(body.professionalTitle, "Titre professionnel", { max: 200 }),
+        profileImage: asImage(body.profileImage),
       };
       getDb().content.about = about;
       persist();

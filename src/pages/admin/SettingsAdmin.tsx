@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "motion/react";
 import { KeyRound, Lock, Save, ShieldCheck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../services/api";
@@ -20,7 +21,7 @@ export default function SettingsAdmin() {
     setNotice("");
 
     if (!currentPassword) {
-      setError("Saisissez votre mot de passe actuel pour confirmer.");
+      setError("Saisissez votre mot de passe actuel pour confirmer les modifications.");
       return;
     }
     if (newPassword && newPassword.length < 8) {
@@ -47,7 +48,7 @@ export default function SettingsAdmin() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setNotice("Identifiants mis à jour. Les autres sessions ont été fermées.");
+      setNotice("Identifiants mis à jour avec succès.");
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "Échec de la mise à jour");
     } finally {
@@ -56,116 +57,150 @@ export default function SettingsAdmin() {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-5"
+    >
       <PageHeader
         eyebrow="Sécurité"
         title="Paramètres du compte"
-        description="Modifiez l'adresse administrateur ou le mot de passe. Les identifiants ne sont jamais exposés au navigateur."
+        description="Gérez les accès administrateur, votre adresse email de connexion et votre mot de passe."
       />
 
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
       {notice && <Alert type="success" onClose={() => setNotice("")}>{notice}</Alert>}
 
       <div className="grid gap-5 lg:grid-cols-3">
-        <form onSubmit={submit} className="admin-card p-5 sm:p-6 lg:col-span-2">
-          <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#0F7DB8]/20 bg-[#0F7DB8]/10">
-              <KeyRound className="h-5 w-5 text-[#2196D3]" />
-            </div>
-            <div>
-              <h2 className="text-sm font-black text-white">Identifiants</h2>
-              <p className="text-xs text-slate-500">Connexion : {user?.email || "—"}</p>
-            </div>
-          </div>
-
-          <div className="space-y-5">
-            <Field label="Adresse email" required>
-              <TextInput
-                type="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                autoComplete="username"
-              />
-            </Field>
-
-            <div className="border-t border-white/10 pt-5">
-              <p className="mb-4 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
-                Changement de mot de passe (facultatif)
-              </p>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Nouveau mot de passe" hint="8 caractères minimum">
-                  <TextInput
-                    type="password"
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    autoComplete="new-password"
-                    placeholder="••••••••••••"
-                  />
-                </Field>
-                <Field label="Confirmer le mot de passe">
-                  <TextInput
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
-                    autoComplete="new-password"
-                    placeholder="••••••••••••"
-                  />
-                </Field>
+        {/* Form Container */}
+        <div className="lg:col-span-2">
+          <Panel className="p-4 sm:p-5">
+            <form onSubmit={submit} className="space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b border-white/5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-cyan-400 border border-blue-500/20">
+                  <KeyRound className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-white">
+                    Compte Administrateur
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Connecté en tant que : <span className="text-slate-200 font-medium">{user?.email || "—"}</span>
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <Field label="Mot de passe actuel" required hint="Requis pour valider toute modification">
-              <div className="relative">
-                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+              <Field label="Adresse email" required>
                 <TextInput
-                  type="password"
+                  type="email"
                   required
-                  className="pl-10"
-                  value={currentPassword}
-                  onChange={(event) => setCurrentPassword(event.target.value)}
-                  autoComplete="current-password"
-                  placeholder="••••••••••••"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  autoComplete="username"
+                  placeholder="admin@talibi.me"
                 />
+              </Field>
+
+              <div className="pt-3 border-t border-white/5">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Changement de mot de passe (optionnel)
+                </p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Nouveau mot de passe" hint="8 caractères minimum">
+                    <TextInput
+                      type="password"
+                      value={newPassword}
+                      onChange={(event) => setNewPassword(event.target.value)}
+                      autoComplete="new-password"
+                      placeholder="••••••••••••"
+                    />
+                  </Field>
+                  <Field label="Confirmer le mot de passe">
+                    <TextInput
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(event) => setConfirmPassword(event.target.value)}
+                      autoComplete="new-password"
+                      placeholder="••••••••••••"
+                    />
+                  </Field>
+                </div>
               </div>
-            </Field>
-          </div>
 
-          <div className="mt-6 flex justify-end">
-            <Button type="submit" icon={Save} loading={saving}>Enregistrer</Button>
-          </div>
-        </form>
+              <div className="pt-3 border-t border-white/5">
+                <Field
+                  label="Mot de passe actuel"
+                  required
+                  hint="Requis pour valider et appliquer les modifications"
+                >
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                    <TextInput
+                      type="password"
+                      required
+                      className="pl-9"
+                      value={currentPassword}
+                      onChange={(event) => setCurrentPassword(event.target.value)}
+                      autoComplete="current-password"
+                      placeholder="••••••••••••"
+                    />
+                  </div>
+                </Field>
+              </div>
 
+              <div className="flex justify-end pt-3 border-t border-white/5">
+                <Button type="submit" icon={Save} loading={saving}>
+                  Enregistrer les modifications
+                </Button>
+              </div>
+            </form>
+          </Panel>
+        </div>
+
+        {/* Security Info Sidebar */}
         <div className="space-y-4">
-          <Panel className="p-5">
-            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-white">
+          <Panel className="p-4 sm:p-5 space-y-3">
+            <div className="flex items-center gap-2 text-sm font-bold text-white">
               <ShieldCheck className="h-4 w-4 text-emerald-400" />
-              Sécurité active
+              <span>Sécurité active</span>
             </div>
-            <ul className="space-y-2 text-[11px] leading-relaxed text-slate-400">
-              <li>• Sessions httpOnly, SameSite strict</li>
-              <li>• Vérification de l'origine sur les écritures</li>
-              <li>• Limitation des tentatives de connexion</li>
-              <li>• Validation serveur de toutes les données</li>
-              <li>• Uploads limités à 5 Mo, formats vérifiés</li>
+            <ul className="space-y-2 text-xs leading-relaxed text-slate-300">
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Sessions chiffrées httpOnly & SameSite strict
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Hachage sécurisé des mots de passe
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Protection contre les attaques par force brute
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Uploads média sécurisés et formats vérifiés
+              </li>
             </ul>
           </Panel>
 
-          <Panel className="p-5">
-            <p className="mb-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">Données</p>
-            <p className="text-xs leading-relaxed text-slate-400">
-              Le contenu est stocké dans <span className="font-mono text-slate-300">data/db.json</span> sur le
-              serveur. Une sauvegarde de ce fichier suffit à préserver l'ensemble du portfolio.
+          <Panel className="p-4 sm:p-5">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+              Stockage des données
             </p>
-            <p className="mt-3 text-xs text-slate-500">
-              Dernière mise à jour :{" "}
-              <span className="font-semibold text-slate-300">
+            <p className="text-xs leading-relaxed text-slate-400">
+              Le contenu est stocké de manière persistante dans <span className="font-mono text-cyan-400">data/db.json</span>.
+            </p>
+            <p className="mt-3 text-[11px] text-slate-500">
+              Dernière synchronisation :{" "}
+              <span className="font-medium text-slate-300">
                 {user ? new Date(user.updatedAt).toLocaleString("fr-FR") : "—"}
               </span>
             </p>
           </Panel>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

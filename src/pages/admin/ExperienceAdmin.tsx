@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Briefcase, Pencil, Plus, Trash2 } from "lucide-react";
+import { motion } from "motion/react";
+import { Briefcase, Pencil, Plus, Trash2, MapPin } from "lucide-react";
 import type { ExperienceItem } from "../../../shared/types";
 import { emptyLocalized } from "../../../shared/types";
 import { api, type ExperienceInput } from "../../services/api";
@@ -22,8 +23,10 @@ import {
 const emptyForm: ExperienceInput = {
   role: emptyLocalized(),
   company: emptyLocalized(),
+  location: emptyLocalized(),
   description: emptyLocalized(),
   period: "",
+  employmentType: "",
 };
 
 export default function ExperienceAdmin() {
@@ -59,7 +62,7 @@ export default function ExperienceAdmin() {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ role: emptyLocalized(), company: emptyLocalized(), description: emptyLocalized(), period: "" });
+    setForm({ role: emptyLocalized(), company: emptyLocalized(), location: emptyLocalized(), description: emptyLocalized(), period: "", employmentType: "" });
     setFormError("");
     setModalOpen(true);
   };
@@ -69,8 +72,10 @@ export default function ExperienceAdmin() {
     setForm({
       role: { ...item.role },
       company: { ...item.company },
+      location: { ...item.location },
       description: { ...item.description },
       period: item.period,
+      employmentType: item.employmentType,
     });
     setFormError("");
     setModalOpen(true);
@@ -88,7 +93,7 @@ export default function ExperienceAdmin() {
       if (editing) await api.updateExperience(editing.id, form);
       else await api.createExperience(form);
       setModalOpen(false);
-      setNotice(editing ? "Expérience mise à jour." : "Expérience ajoutée.");
+      setNotice(editing ? "Expérience mise à jour." : "Expérience ajoutée avec succès.");
       await load();
       await refreshPublic();
     } catch (saveError) {
@@ -115,12 +120,21 @@ export default function ExperienceAdmin() {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-5"
+    >
       <PageHeader
         eyebrow="Parcours"
-        title="Expériences"
-        description="Ajoutez vos expériences professionnelles et leurs descriptions localisées."
-        actions={<Button icon={Plus} onClick={openCreate}>Nouvelle expérience</Button>}
+        title="Gestion des expériences"
+        description="Ajoutez et organisez vos expériences professionnelles et missions avec détails traduits."
+        actions={
+          <Button icon={Plus} onClick={openCreate}>
+            Nouvelle expérience
+          </Button>
+        }
       />
 
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
@@ -129,43 +143,65 @@ export default function ExperienceAdmin() {
       {loading ? (
         <LoadingList rows={3} />
       ) : items.length === 0 ? (
-        <Panel className="p-4">
+        <Panel>
           <EmptyState
             icon={Briefcase}
-            title="Aucune expérience"
-            description="Ajoutez une expérience professionnelle pour valoriser votre parcours."
+            title="Aucune expérience enregistrée"
+            description="Ajoutez une expérience professionnelle pour enrichir votre parcours sur le portfolio."
             action={<Button icon={Plus} onClick={openCreate}>Ajouter une expérience</Button>}
           />
         </Panel>
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <Panel key={item.id} className="p-4 sm:p-5">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#F28C28]/20 bg-[#F28C28]/10">
-                  <Briefcase className="h-6 w-6 text-[#F5A65B]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-sm font-bold text-white">
-                      {item.role.fr || item.role.en || item.role.de || item.role.ar}
-                    </h3>
-                    {item.period && <Badge tone="orange">{item.period}</Badge>}
+            <Panel key={item.id} className="p-4 sm:p-5 hover:border-white/20 transition-all duration-150">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div className="flex items-start gap-3.5 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-purple-400">
+                    <Briefcase className="h-5 w-5" />
                   </div>
-                  <p className="mt-0.5 text-[11px] font-bold uppercase tracking-wider text-[#F5A65B]">
-                    {item.company.fr || item.company.en || "—"}
-                  </p>
-                  <p className="mt-2 line-clamp-2 text-xs text-slate-400">
-                    {item.description.fr || item.description.en}
-                  </p>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-sm font-bold text-white">
+                        {item.role.fr || item.role.en || item.role.de || item.role.ar}
+                      </h3>
+                      {item.period && <Badge tone="orange">{item.period}</Badge>}
+                      {item.employmentType && <Badge tone="slate">{item.employmentType}</Badge>}
+                    </div>
+                    <p className="text-xs font-semibold text-purple-300">
+                      {item.company.fr || item.company.en || "—"}
+                    </p>
+                    {(item.location.fr || item.location.en) && (
+                      <p className="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                        <MapPin className="h-3 w-3" />
+                        {item.location.fr || item.location.en}
+                      </p>
+                    )}
+                    {(item.description.fr || item.description.en) && (
+                      <p className="text-xs text-slate-400 leading-normal line-clamp-2 pt-1">
+                        {item.description.fr || item.description.en}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <Button variant="secondary" className="px-3 py-2" icon={Pencil} onClick={() => openEdit(item)}>
-                    <span className="hidden md:inline">Modifier</span>
-                  </Button>
-                  <Button variant="danger" className="px-3 py-2" icon={Trash2} onClick={() => setDeleting(item)}>
-                    <span className="sr-only">Supprimer</span>
-                  </Button>
+
+                <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center border-t sm:border-t-0 border-white/5 pt-2 sm:pt-0">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(item)}
+                    className="rounded-lg p-2 text-slate-400 hover:text-blue-300 hover:bg-white/10 transition cursor-pointer"
+                    title="Modifier"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleting(item)}
+                    className="rounded-lg p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </Panel>
@@ -187,9 +223,9 @@ export default function ExperienceAdmin() {
           </>
         }
       >
-        <form id="experience-form" onSubmit={submit} className="space-y-5">
+        <form id="experience-form" onSubmit={submit} className="space-y-4">
           {formError && <Alert type="error">{formError}</Alert>}
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <LocalizedField
               label="Poste occupé"
               required
@@ -198,27 +234,48 @@ export default function ExperienceAdmin() {
               placeholder="Software Engineer & AI Developer"
             />
             <LocalizedField
-              label="Entreprise / contexte"
+              label="Entreprise / organisation"
               value={form.company}
               onChange={(company) => setForm({ ...form, company })}
-              placeholder="Freelance / Projets"
+              placeholder="Freelance / Tech Company"
             />
           </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Période" hint="Ex. : 2023 – Présent">
+              <TextInput
+                value={form.period}
+                placeholder="2023 – Présent"
+                onChange={(event) => setForm({ ...form, period: event.target.value })}
+              />
+            </Field>
+            <Field label="Type d'emploi">
+              <select
+                value={form.employmentType}
+                onChange={(event) => setForm({ ...form, employmentType: event.target.value })}
+                className="w-full h-[38px] rounded-lg bg-[#081127] border border-white/10 px-3 text-sm text-slate-100 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Sélectionner un type</option>
+                <option value="CDI">CDI (Plein temps)</option>
+                <option value="Freelance">Freelance / Indépendant</option>
+                <option value="Stage">Stage</option>
+                <option value="CDD">CDD</option>
+              </select>
+            </Field>
+          </div>
           <LocalizedField
-            label="Description"
+            label="Localisation"
+            value={form.location}
+            onChange={(location) => setForm({ ...form, location })}
+            placeholder="Meknès, Maroc (Hybride)"
+          />
+          <LocalizedField
+            label="Missions & réalisations"
             multiline
-            rows={4}
+            rows={3}
             value={form.description}
             onChange={(description) => setForm({ ...form, description })}
-            placeholder="Missions, technologies, résultats…"
+            placeholder="Description des projets, responsabilités et impact..."
           />
-          <Field label="Période" hint="Ex. : 2023 – Présent">
-            <TextInput
-              value={form.period}
-              placeholder="2023 – Present"
-              onChange={(event) => setForm({ ...form, period: event.target.value })}
-            />
-          </Field>
         </form>
       </Modal>
 
@@ -230,6 +287,6 @@ export default function ExperienceAdmin() {
         onCancel={() => setDeleting(null)}
         onConfirm={() => void confirmDelete()}
       />
-    </div>
+    </motion.div>
   );
 }

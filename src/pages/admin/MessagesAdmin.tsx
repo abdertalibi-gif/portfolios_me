@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "motion/react";
 import { Inbox, Mail, MailOpen, Reply, Search, Trash2 } from "lucide-react";
 import type { Message } from "../../../shared/types";
 import { api } from "../../services/api";
@@ -99,11 +100,16 @@ export default function MessagesAdmin() {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-5"
+    >
       <PageHeader
         eyebrow="Boîte de réception"
-        title="Messages"
-        description={`${items.length} message${items.length > 1 ? "s" : ""} · ${unreadCount} non lu${unreadCount > 1 ? "s" : ""}`}
+        title="Messages reçus"
+        description={`${items.length} message${items.length > 1 ? "s" : ""} au total · ${unreadCount} non lu${unreadCount > 1 ? "s" : ""}`}
         actions={
           <Button variant="secondary" icon={Inbox} onClick={() => void load()} loading={loading}>
             Actualiser
@@ -114,106 +120,128 @@ export default function MessagesAdmin() {
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
       {notice && <Alert type="success" onClose={() => setNotice("")}>{notice}</Alert>}
 
-      <Panel className="mb-4 flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
-          {[
-            { id: "all" as const, label: `Tous (${items.length})` },
-            { id: "unread" as const, label: `Non lus (${unreadCount})` },
-            { id: "read" as const, label: `Lus (${items.length - unreadCount})` },
-          ].map((entry) => (
-            <button
-              key={entry.id}
-              onClick={() => setFilter(entry.id)}
-              className={cn(
-                "rounded-lg px-3 py-1.5 text-xs font-bold transition",
-                filter === entry.id ? "bg-[#0F7DB8] text-white" : "text-slate-400 hover:text-white",
-              )}
-            >
-              {entry.label}
-            </button>
-          ))}
+      {/* Toolbar: Filter Tabs & Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="inline-flex items-center rounded-lg border border-white/10 bg-[#081127] p-1 self-start">
+          <button
+            type="button"
+            onClick={() => setFilter("all")}
+            className={cn(
+              "rounded-md px-3 py-1.5 text-xs font-semibold transition cursor-pointer",
+              filter === "all"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]",
+            )}
+          >
+            Tous ({items.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("unread")}
+            className={cn(
+              "rounded-md px-3 py-1.5 text-xs font-semibold transition cursor-pointer",
+              filter === "unread"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]",
+            )}
+          >
+            Non lus ({unreadCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("read")}
+            className={cn(
+              "rounded-md px-3 py-1.5 text-xs font-semibold transition cursor-pointer",
+              filter === "read"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]",
+            )}
+          >
+            Lus ({items.length - unreadCount})
+          </button>
         </div>
+
         <div className="relative sm:w-72">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Rechercher un message…"
-            className="admin-input pl-10"
+            placeholder="Rechercher par nom, email..."
+            className="h-[38px] w-full rounded-lg bg-[#081127] border border-white/10 pl-9 pr-3 text-xs sm:text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-      </Panel>
+      </div>
 
       {loading ? (
-        <LoadingList rows={4} />
+        <LoadingList rows={3} />
       ) : filtered.length === 0 ? (
-        <Panel className="p-4">
+        <Panel>
           <EmptyState
             icon={Mail}
-            title={items.length === 0 ? "Aucun message" : "Aucun résultat"}
+            title={items.length === 0 ? "Aucun message reçu" : "Aucun résultat trouvé"}
             description={
               items.length === 0
-                ? "Les messages envoyés depuis le formulaire de contact apparaîtront ici."
-                : "Modifiez votre recherche ou le filtre appliqué."
+                ? "Les messages envoyés par les visiteurs via le portfolio apparaîtront ici."
+                : "Aucun message ne correspond à votre filtre de recherche."
             }
           />
         </Panel>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {filtered.map((message) => (
             <Panel
               key={message.id}
               className={cn(
-                "cursor-pointer p-4 transition hover:border-[#0F7DB8]/35",
-                !message.read && "border-l-2 border-l-[#F28C28]",
+                "p-3.5 sm:p-4 hover:border-white/20 transition-all duration-150 cursor-pointer",
+                !message.read && "border-l-3 border-l-blue-500 bg-[#0D1730]",
               )}
             >
-              <div className="flex items-start gap-3" onClick={() => void openMessage(message)}>
+              <div className="flex items-start gap-3.5" onClick={() => void openMessage(message)}>
                 <div
                   className={cn(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-black",
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                     message.read
-                      ? "bg-white/5 text-slate-400"
-                      : "bg-[#0F7DB8]/15 text-[#6FC3F0]",
+                      ? "bg-white/[0.04] text-slate-400 border border-white/5"
+                      : "bg-blue-500/15 text-cyan-400 border border-blue-500/30",
                   )}
                 >
                   {message.name.slice(0, 2).toUpperCase()}
                 </div>
-                <div className="min-w-0 flex-1">
+
+                <div className="min-w-0 flex-1 space-y-0.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className={cn("truncate text-sm", message.read ? "font-semibold text-slate-300" : "font-black text-white")}>
+                    <p className={cn("text-xs sm:text-sm truncate", message.read ? "font-medium text-slate-200" : "font-bold text-white")}>
                       {message.subject}
                     </p>
-                    {!message.read && <Badge tone="orange">Nouveau</Badge>}
+                    {!message.read && <Badge tone="amber">Nouveau</Badge>}
                   </div>
-                  <p className="mt-0.5 truncate text-xs text-slate-500">
+                  <p className="text-[11px] text-slate-400 truncate">
                     {message.name} · {message.email}
                   </p>
-                  <p className="mt-1 line-clamp-1 text-xs text-slate-400">{message.message}</p>
+                  <p className="text-xs text-slate-400 line-clamp-1 pt-0.5">
+                    {message.message}
+                  </p>
                 </div>
-                <div className="flex shrink-0 flex-col items-end gap-2">
-                  <span className="text-[10px] font-semibold text-slate-600">
+
+                <div className="flex shrink-0 flex-col items-end gap-2 pl-2">
+                  <span className="text-[10px] text-slate-500 font-mono">
                     {new Date(message.createdAt).toLocaleDateString("fr-FR")}
                   </span>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                     <button
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        void toggleRead(message);
-                      }}
+                      type="button"
+                      onClick={() => toggleRead(message)}
                       disabled={busyId === message.id}
-                      className="rounded-lg p-1.5 text-slate-500 transition hover:bg-white/10 hover:text-white disabled:opacity-50"
-                      aria-label={message.read ? "Marquer comme non lu" : "Marquer comme lu"}
+                      className="rounded p-1 text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                      title={message.read ? "Marquer comme non lu" : "Marquer comme lu"}
                     >
-                      {message.read ? <Mail className="h-3.5 w-3.5" /> : <MailOpen className="h-3.5 w-3.5" />}
+                      {message.read ? <Mail className="h-3.5 w-3.5" /> : <MailOpen className="h-3.5 w-3.5 text-blue-400" />}
                     </button>
                     <button
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setDeleting(message);
-                      }}
-                      className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-500/15 hover:text-red-300"
-                      aria-label="Supprimer"
+                      type="button"
+                      onClick={() => setDeleting(message)}
+                      className="rounded p-1 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                      title="Supprimer"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -225,37 +253,41 @@ export default function MessagesAdmin() {
         </div>
       )}
 
+      {/* Message Reader Modal */}
       <Modal
         open={Boolean(selected)}
         onClose={() => setSelected(null)}
-        title={selected?.subject || "Message"}
-        description={selected ? `${selected.name} · ${selected.email}` : undefined}
+        title={selected?.subject || "Détail du message"}
+        description={selected ? `${selected.name} (${selected.email})` : undefined}
         footer={
           selected ? (
-            <>
-              <Button variant="secondary" icon={Trash2} onClick={() => setDeleting(selected)}>
+            <div className="flex items-center justify-between w-full">
+              <Button variant="danger" size="sm" icon={Trash2} onClick={() => setDeleting(selected)}>
                 Supprimer
               </Button>
-              <a
-                href={`mailto:${selected.email}?subject=${encodeURIComponent(`Re: ${selected.subject}`)}`}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0F7DB8] to-[#2196D3] px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
-              >
-                <Reply className="h-4 w-4" />
-                Répondre par email
-              </a>
-            </>
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>
+                  Fermer
+                </Button>
+                <a
+                  href={`mailto:${selected.email}?subject=${encodeURIComponent(`Re: ${selected.subject}`)}`}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition"
+                >
+                  <Reply className="h-3.5 w-3.5" />
+                  Répondre par email
+                </a>
+              </div>
+            </div>
           ) : undefined
         }
       >
         {selected && (
           <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <Badge tone={selected.read ? "slate" : "orange"}>{selected.read ? "Lu" : "Non lu"}</Badge>
-              <span>
-                Reçu le {new Date(selected.createdAt).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" })}
-              </span>
+            <div className="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-white/5">
+              <span>De : <strong className="text-white">{selected.name}</strong> &lt;{selected.email}&gt;</span>
+              <span>{new Date(selected.createdAt).toLocaleString("fr-FR")}</span>
             </div>
-            <div className="admin-panel whitespace-pre-wrap p-4 text-sm leading-relaxed text-slate-200">
+            <div className="rounded-lg bg-[#081127] border border-white/10 p-4 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
               {selected.message}
             </div>
           </div>
@@ -270,6 +302,6 @@ export default function MessagesAdmin() {
         onCancel={() => setDeleting(null)}
         onConfirm={() => void confirmDelete()}
       />
-    </div>
+    </motion.div>
   );
 }

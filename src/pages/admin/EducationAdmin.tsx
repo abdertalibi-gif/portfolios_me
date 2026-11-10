@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { GraduationCap, Pencil, Plus, Trash2 } from "lucide-react";
 import type { EducationItem } from "../../../shared/types";
 import { emptyLocalized } from "../../../shared/types";
@@ -22,6 +23,7 @@ import {
 const emptyForm: EducationInput = {
   degree: emptyLocalized(),
   institution: emptyLocalized(),
+  description: emptyLocalized(),
   period: "",
 };
 
@@ -58,14 +60,14 @@ export default function EducationAdmin() {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ degree: emptyLocalized(), institution: emptyLocalized(), period: "" });
+    setForm({ ...emptyForm, degree: emptyLocalized(), institution: emptyLocalized(), description: emptyLocalized(), period: "" });
     setFormError("");
     setModalOpen(true);
   };
 
   const openEdit = (item: EducationItem) => {
     setEditing(item);
-    setForm({ degree: { ...item.degree }, institution: { ...item.institution }, period: item.period });
+    setForm({ degree: { ...item.degree }, institution: { ...item.institution }, description: { ...item.description }, period: item.period });
     setFormError("");
     setModalOpen(true);
   };
@@ -82,7 +84,7 @@ export default function EducationAdmin() {
       if (editing) await api.updateEducation(editing.id, form);
       else await api.createEducation(form);
       setModalOpen(false);
-      setNotice(editing ? "Formation mise à jour." : "Formation ajoutée.");
+      setNotice(editing ? "Formation mise à jour." : "Formation ajoutée avec succès.");
       await load();
       await refreshPublic();
     } catch (saveError) {
@@ -109,12 +111,21 @@ export default function EducationAdmin() {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-5"
+    >
       <PageHeader
         eyebrow="Parcours"
         title="Formation"
-        description="Gérez vos diplômes et formations. Chaque entrée peut être traduite dans les quatre langues."
-        actions={<Button icon={Plus} onClick={openCreate}>Nouvelle formation</Button>}
+        description="Gérez vos diplômes et certifications académiques traduits dans les quatre langues."
+        actions={
+          <Button icon={Plus} onClick={openCreate}>
+            Nouvelle formation
+          </Button>
+        }
       />
 
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
@@ -123,10 +134,10 @@ export default function EducationAdmin() {
       {loading ? (
         <LoadingList rows={3} />
       ) : items.length === 0 ? (
-        <Panel className="p-4">
+        <Panel>
           <EmptyState
             icon={GraduationCap}
-            title="Aucune formation"
+            title="Aucune formation enregistrée"
             description="Ajoutez un diplôme ou une formation pour compléter votre parcours."
             action={<Button icon={Plus} onClick={openCreate}>Ajouter une formation</Button>}
           />
@@ -134,29 +145,47 @@ export default function EducationAdmin() {
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <Panel key={item.id} className="p-4 sm:p-5">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#0F7DB8]/20 bg-[#0F7DB8]/10">
-                  <GraduationCap className="h-6 w-6 text-[#2196D3]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-sm font-bold text-white">
-                      {item.degree.fr || item.degree.en || item.degree.de || item.degree.ar}
-                    </h3>
-                    {item.period && <Badge tone="blue">{item.period}</Badge>}
+            <Panel key={item.id} className="p-4 sm:p-5 hover:border-white/20 transition-all duration-150">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 text-cyan-400">
+                    <GraduationCap className="h-5 w-5" />
                   </div>
-                  <p className="mt-1 text-xs text-slate-400">
-                    {item.institution.fr || item.institution.en || "—"}
-                  </p>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-sm font-bold text-white">
+                        {item.degree.fr || item.degree.en || item.degree.de || item.degree.ar}
+                      </h3>
+                      {item.period && <Badge tone="blue">{item.period}</Badge>}
+                    </div>
+                    <p className="text-xs text-slate-300 font-medium">
+                      {item.institution.fr || item.institution.en || "—"}
+                    </p>
+                    {(item.description.fr || item.description.en) && (
+                      <p className="text-xs text-slate-400 leading-normal line-clamp-2">
+                        {item.description.fr || item.description.en}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <Button variant="secondary" className="px-3 py-2" icon={Pencil} onClick={() => openEdit(item)}>
-                    <span className="hidden md:inline">Modifier</span>
-                  </Button>
-                  <Button variant="danger" className="px-3 py-2" icon={Trash2} onClick={() => setDeleting(item)}>
-                    <span className="sr-only">Supprimer</span>
-                  </Button>
+
+                <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center border-t sm:border-t-0 border-white/5 pt-2 sm:pt-0">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(item)}
+                    className="rounded-lg p-2 text-slate-400 hover:text-blue-300 hover:bg-white/10 transition cursor-pointer"
+                    title="Modifier"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleting(item)}
+                    className="rounded-lg p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </Panel>
@@ -177,8 +206,9 @@ export default function EducationAdmin() {
           </>
         }
       >
-        <form id="education-form" onSubmit={submit} className="space-y-5">
+        <form id="education-form" onSubmit={submit} className="space-y-4">
           {formError && <Alert type="error">{formError}</Alert>}
+
           <LocalizedField
             label="Diplôme / formation"
             required
@@ -186,12 +216,14 @@ export default function EducationAdmin() {
             onChange={(degree) => setForm({ ...form, degree })}
             placeholder="Licence d'Excellence en Sciences des Données…"
           />
+
           <LocalizedField
             label="Établissement"
             value={form.institution}
             onChange={(institution) => setForm({ ...form, institution })}
             placeholder="Université Moulay Ismail — Faculté des Sciences"
           />
+
           <Field label="Période" hint="Ex. : 2023 – 2026">
             <TextInput
               value={form.period}
@@ -199,6 +231,15 @@ export default function EducationAdmin() {
               onChange={(event) => setForm({ ...form, period: event.target.value })}
             />
           </Field>
+
+          <LocalizedField
+            label="Description"
+            multiline
+            rows={3}
+            value={form.description}
+            onChange={(description) => setForm({ ...form, description })}
+            placeholder="Description des acquis, mentions ou projets clés..."
+          />
         </form>
       </Modal>
 
@@ -210,6 +251,6 @@ export default function EducationAdmin() {
         onCancel={() => setDeleting(null)}
         onConfirm={() => void confirmDelete()}
       />
-    </div>
+    </motion.div>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "motion/react";
 import { Code2, Layers, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { Skill, SkillCategory } from "../../../shared/types";
 import { emptyLocalized } from "../../../shared/types";
@@ -176,15 +177,24 @@ export default function SkillsAdmin() {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-5"
+    >
       <PageHeader
         eyebrow="Contenu"
         title="Compétences"
-        description="Organisez vos compétences par catégories, avec un intitulé dans les quatre langues."
+        description="Organisez vos technologies et compétences par catégories, avec un libellé dans les quatre langues."
         actions={
           <>
-            <Button variant="secondary" icon={Layers} onClick={openCategoryCreate}>Nouvelle catégorie</Button>
-            <Button icon={Plus} onClick={() => openSkillCreate()}>Nouvelle compétence</Button>
+            <Button variant="secondary" icon={Layers} onClick={openCategoryCreate}>
+              Nouvelle catégorie
+            </Button>
+            <Button icon={Plus} onClick={() => openSkillCreate()}>
+              Nouvelle compétence
+            </Button>
           </>
         }
       />
@@ -192,103 +202,133 @@ export default function SkillsAdmin() {
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
       {notice && <Alert type="success" onClose={() => setNotice("")}>{notice}</Alert>}
 
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
-          {[
-            { id: "skills" as const, label: `Compétences (${skills.length})` },
-            { id: "categories" as const, label: `Catégories (${categories.length})` },
-          ].map((entry) => (
-            <button
-              key={entry.id}
-              onClick={() => setTab(entry.id)}
-              className={cn(
-                "rounded-lg px-3 py-1.5 text-xs font-bold transition",
-                tab === entry.id ? "bg-[#0F7DB8] text-white" : "text-slate-400 hover:text-white",
-              )}
-            >
-              {entry.label}
-            </button>
-          ))}
+      {/* Toolbar: Segmented Tabs & Filters */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        {/* Left: View Tabs */}
+        <div className="inline-flex items-center rounded-lg border border-white/10 bg-[#081127] p-1 self-start">
+          <button
+            type="button"
+            onClick={() => setTab("skills")}
+            className={cn(
+              "rounded-md px-3 py-1.5 text-xs font-semibold transition cursor-pointer",
+              tab === "skills"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]",
+            )}
+          >
+            Compétences ({skills.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("categories")}
+            className={cn(
+              "rounded-md px-3 py-1.5 text-xs font-semibold transition cursor-pointer",
+              tab === "categories"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]",
+            )}
+          >
+            Catégories ({categories.length})
+          </button>
         </div>
 
-        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:justify-end">
-          <select
-            value={filterCategory}
-            onChange={(event) => setFilterCategory(event.target.value)}
-            className="admin-input sm:max-w-[220px]"
-          >
-            <option value="all">Toutes les catégories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name.en || category.name.fr || category.key}
-              </option>
-            ))}
-          </select>
-          <div className="relative sm:max-w-xs sm:flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+        {/* Right: Category filter & Search Input */}
+        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+          {tab === "skills" && (
+            <select
+              value={filterCategory}
+              onChange={(event) => setFilterCategory(event.target.value)}
+              className="h-[38px] rounded-lg bg-[#081127] border border-white/10 px-3 text-xs sm:text-sm text-slate-200 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">Toutes les catégories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name.fr || category.name.en || category.key}
+                </option>
+              ))}
+            </select>
+          )}
+
+          <div className="relative flex-1 sm:w-60">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Rechercher…"
-              className="admin-input pl-10"
+              placeholder="Rechercher une compétence..."
+              className="h-[38px] w-full rounded-lg bg-[#081127] border border-white/10 pl-9 pr-3 text-xs sm:text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         </div>
       </div>
 
       {loading ? (
-        <LoadingList rows={4} />
+        <LoadingList rows={3} />
       ) : tab === "categories" ? (
         categories.length === 0 ? (
-          <Panel className="p-4">
+          <Panel>
             <EmptyState
               icon={Layers}
               title="Aucune catégorie"
-              description="Créez une catégorie pour regrouper vos compétences."
+              description="Créez une première catégorie pour regrouper vos compétences."
               action={<Button icon={Plus} onClick={openCategoryCreate}>Créer une catégorie</Button>}
             />
           </Panel>
         ) : (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
             {categories.map((category) => {
               const count = skills.filter((skill) => skill.categoryId === category.id).length;
               return (
-                <Panel key={category.id} className="p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#0F7DB8]/20 bg-[#0F7DB8]/10">
-                      <Layers className="h-5 w-5 text-[#2196D3]" />
+                <Panel
+                  key={category.id}
+                  className="p-4 sm:p-5 flex flex-col justify-between hover:border-white/20 transition-all duration-150"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-blue-500/20 bg-blue-500/10 text-cyan-400">
+                        <Layers className="h-4.5 w-4.5" />
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => openCategoryEdit(category)}
+                          className="rounded p-1 text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                          aria-label="Modifier la catégorie"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDeleting({
+                              type: "category",
+                              id: category.id,
+                              label: category.name.fr || category.name.en || category.key,
+                            })
+                          }
+                          className="rounded p-1 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                          aria-label="Supprimer la catégorie"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" className="px-2 py-1.5" icon={Pencil} onClick={() => openCategoryEdit(category)}>
-                        <span className="sr-only">Modifier</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="px-2 py-1.5 text-red-300 hover:bg-red-500/10"
-                        icon={Trash2}
-                        onClick={() =>
-                          setDeleting({
-                            type: "category",
-                            id: category.id,
-                            label: category.name.en || category.name.fr || category.key,
-                          })
-                        }
-                      >
-                        <span className="sr-only">Supprimer</span>
-                      </Button>
-                    </div>
+
+                    <h3 className="mt-3 text-sm font-bold text-white">
+                      {category.name.fr || category.name.en || category.key}
+                    </h3>
+                    <p className="mt-0.5 text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                      {category.key}
+                    </p>
                   </div>
-                  <h3 className="mt-3 text-sm font-bold text-white">
-                    {category.name.en || category.name.fr || category.key}
-                  </h3>
-                  <p className="mt-0.5 text-[10px] font-mono uppercase tracking-wider text-slate-500">
-                    {category.key}
-                  </p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <Badge tone="blue">{count} compétence{count > 1 ? "s" : ""}</Badge>
+
+                  <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+                    <Badge tone="blue">
+                      {count} compétence{count > 1 ? "s" : ""}
+                    </Badge>
                     <button
+                      type="button"
                       onClick={() => openSkillCreate(category.id)}
-                      className="text-xs font-bold text-[#2196D3] hover:text-[#6FC3F0]"
+                      className="text-xs font-semibold text-blue-400 hover:text-cyan-300 transition cursor-pointer"
                     >
                       + Ajouter
                     </button>
@@ -299,88 +339,117 @@ export default function SkillsAdmin() {
           </div>
         )
       ) : visibleCategories.length === 0 ? (
-        <Panel className="p-4">
+        <Panel>
           <EmptyState
             icon={Code2}
-            title="Aucune compétence"
-            description="Ajoutez vos technologies et expertises pour les afficher sur le portfolio."
-            action={<Button icon={Plus} onClick={() => openSkillCreate()}>Ajouter une compétence</Button>}
+            title="Aucune compétence trouvée"
+            description={
+              search
+                ? "Aucune compétence ne correspond à votre recherche."
+                : "Ajoutez vos compétences techniques pour les afficher sur le portfolio."
+            }
+            action={
+              <Button icon={Plus} onClick={() => openSkillCreate()}>
+                Ajouter une compétence
+              </Button>
+            }
           />
         </Panel>
       ) : (
         <div className="space-y-4">
           {visibleCategories.map(({ category, skills: categorySkills }) => (
-            <Panel key={category.id} className="p-4 sm:p-5">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#2196D3]" />
+            <Panel
+              key={category.id}
+              className="p-4 sm:p-5 hover:border-white/20 transition-all duration-150"
+            >
+              {/* Category Header */}
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="h-2 w-2 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50" />
                   <h3 className="text-sm font-bold text-white">
-                    {category.name.en || category.name.fr || category.key}
+                    {category.name.fr || category.name.en || category.key}
                   </h3>
-                  <Badge tone="slate">{categorySkills.length}</Badge>
+                  <Badge tone="slate">
+                    {categorySkills.length}
+                  </Badge>
                 </div>
-                <Button variant="ghost" className="px-2 py-1.5 text-xs" icon={Plus} onClick={() => openSkillCreate(category.id)}>
-                  Ajouter
-                </Button>
+                <button
+                  type="button"
+                  onClick={() => openSkillCreate(category.id)}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-400 hover:text-cyan-300 hover:bg-blue-500/10 px-2 py-1 rounded transition cursor-pointer"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Ajouter</span>
+                </button>
               </div>
 
-              {categorySkills.length === 0 ? (
-                <p className="text-xs text-slate-500">Aucune compétence dans cette catégorie.</p>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {categorySkills.map((skill) => (
-                    <div
-                      key={skill.id}
-                      className="group flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] py-1.5 pl-3 pr-1.5 transition hover:border-[#0F7DB8]/30"
-                    >
-                      <span className="text-xs font-semibold text-slate-200">
-                        {skill.name.en || skill.name.fr || skill.name.de || skill.name.ar}
-                      </span>
-                      <div className="flex items-center gap-0.5">
-                        <button
-                          onClick={() => openSkillEdit(skill)}
-                          className="rounded-md p-1 text-slate-500 transition hover:bg-white/10 hover:text-white"
-                          aria-label="Modifier"
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </button>
-                        <button
-                          onClick={() =>
-                            setDeleting({
-                              type: "skill",
-                              id: skill.id,
-                              label: skill.name.en || skill.name.fr || "cette compétence",
-                            })
-                          }
-                          className="rounded-md p-1 text-slate-500 transition hover:bg-red-500/20 hover:text-red-300"
-                          aria-label="Supprimer"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
+              {/* Skills Tags List */}
+              <div className="mt-3 pt-3 border-t border-white/5">
+                {categorySkills.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic py-1">
+                    Aucune compétence dans cette catégorie.
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {categorySkills.map((skill) => (
+                      <div
+                        key={skill.id}
+                        className="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-slate-200 hover:border-blue-500/30 hover:bg-white/[0.07] transition-all"
+                      >
+                        <span className="font-medium">
+                          {skill.name.fr || skill.name.en || skill.name.de || skill.name.ar}
+                        </span>
+                        <div className="flex items-center gap-0.5 border-l border-white/10 pl-1.5 ml-0.5">
+                          <button
+                            type="button"
+                            onClick={() => openSkillEdit(skill)}
+                            className="rounded p-0.5 text-slate-400 hover:text-blue-300 hover:bg-white/10 transition cursor-pointer"
+                            aria-label={`Modifier ${skill.name.fr || skill.name.en}`}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setDeleting({
+                                type: "skill",
+                                id: skill.id,
+                                label: skill.name.fr || skill.name.en || "cette compétence",
+                              })
+                            }
+                            className="rounded p-0.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                            aria-label={`Supprimer ${skill.name.fr || skill.name.en}`}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
             </Panel>
           ))}
         </div>
       )}
 
+      {/* Modal: Catégorie */}
       <Modal
         open={categoryModal}
         onClose={() => setCategoryModal(false)}
         title={editingCategory ? "Modifier la catégorie" : "Nouvelle catégorie"}
         footer={
           <>
-            <Button variant="secondary" onClick={() => setCategoryModal(false)} disabled={savingCategory}>Annuler</Button>
+            <Button variant="secondary" onClick={() => setCategoryModal(false)} disabled={savingCategory}>
+              Annuler
+            </Button>
             <Button type="submit" form="category-form" loading={savingCategory}>
               {editingCategory ? "Enregistrer" : "Créer"}
             </Button>
           </>
         }
       >
-        <form id="category-form" onSubmit={submitCategory} className="space-y-5">
+        <form id="category-form" onSubmit={submitCategory} className="space-y-4">
           {categoryError && <Alert type="error">{categoryError}</Alert>}
           <LocalizedField
             label="Nom de la catégorie"
@@ -399,30 +468,33 @@ export default function SkillsAdmin() {
         </form>
       </Modal>
 
+      {/* Modal: Compétence */}
       <Modal
         open={skillModal}
         onClose={() => setSkillModal(false)}
         title={editingSkill ? "Modifier la compétence" : "Nouvelle compétence"}
         footer={
           <>
-            <Button variant="secondary" onClick={() => setSkillModal(false)} disabled={savingSkill}>Annuler</Button>
+            <Button variant="secondary" onClick={() => setSkillModal(false)} disabled={savingSkill}>
+              Annuler
+            </Button>
             <Button type="submit" form="skill-form" loading={savingSkill}>
               {editingSkill ? "Enregistrer" : "Ajouter"}
             </Button>
           </>
         }
       >
-        <form id="skill-form" onSubmit={submitSkill} className="space-y-5">
+        <form id="skill-form" onSubmit={submitSkill} className="space-y-4">
           {skillError && <Alert type="error">{skillError}</Alert>}
           <Field label="Catégorie" required>
             <select
               value={skillForm.categoryId}
               onChange={(event) => setSkillForm({ ...skillForm, categoryId: event.target.value })}
-              className="admin-input"
+              className="w-full h-[38px] rounded-lg bg-[#081127] border border-white/10 px-3 text-sm text-slate-100 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
             >
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {category.name.en || category.name.fr || category.key}
+                  {category.name.fr || category.name.en || category.key}
                 </option>
               ))}
             </select>
@@ -432,23 +504,24 @@ export default function SkillsAdmin() {
             required
             value={skillForm.name}
             onChange={(name) => setSkillForm({ ...skillForm, name })}
-            placeholder="Python"
+            placeholder="Python, React, Docker..."
           />
         </form>
       </Modal>
 
+      {/* Confirmation Dialog */}
       <ConfirmDialog
         open={Boolean(deleting)}
         title={deleting?.type === "category" ? "Supprimer la catégorie ?" : "Supprimer la compétence ?"}
         description={
           deleting?.type === "category"
-            ? `« ${deleting.label} » et toutes ses compétences seront supprimées du portfolio.`
+            ? `« ${deleting.label} » et toutes ses compétences associées seront supprimées du portfolio.`
             : `« ${deleting?.label} » sera retirée du portfolio.`
         }
         loading={deletingBusy}
         onCancel={() => setDeleting(null)}
         onConfirm={() => void confirmDelete()}
       />
-    </div>
+    </motion.div>
   );
 }

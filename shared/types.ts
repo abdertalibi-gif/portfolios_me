@@ -12,6 +12,7 @@ export interface Project {
   github: string;
   demo: string;
   published: boolean;
+  featured: boolean;
   order: number;
   createdAt: string;
   updatedAt: string;
@@ -35,6 +36,7 @@ export interface EducationItem {
   id: string;
   degree: LocalizedText;
   institution: LocalizedText;
+  description: LocalizedText;
   period: string;
   order: number;
 }
@@ -43,8 +45,10 @@ export interface ExperienceItem {
   id: string;
   role: LocalizedText;
   company: LocalizedText;
+  location: LocalizedText;
   description: LocalizedText;
   period: string;
+  employmentType: string;
   order: number;
 }
 
@@ -55,6 +59,8 @@ export interface Certification {
   date: string;
   link: string;
   image: string;
+  expirationDate: string;
+  credentialId: string;
   order: number;
 }
 
@@ -66,6 +72,8 @@ export interface FocusItem {
 export interface AboutContent {
   description: LocalizedText;
   focus: FocusItem[];
+  professionalTitle: LocalizedText;
+  profileImage: string;
 }
 
 export interface ContactContent {

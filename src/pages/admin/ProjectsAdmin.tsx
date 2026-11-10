@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Eye, EyeOff, FolderKanban, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { motion } from "motion/react";
+import { Eye, EyeOff, FolderKanban, Pencil, Plus, Search, Trash2, ExternalLink, Github } from "lucide-react";
 import type { Project } from "../../../shared/types";
 import { api, type ProjectInput } from "../../services/api";
 import { useContent } from "../../context/ContentContext";
@@ -19,6 +20,7 @@ import {
   TagsInput,
   TextInput,
   Toggle,
+  cn,
 } from "../../components/admin/ui";
 import { emptyLocalized } from "../../../shared/types";
 
@@ -94,6 +96,7 @@ export default function ProjectsAdmin() {
       github: project.github,
       demo: project.demo,
       published: project.published,
+      featured: project.featured,
     });
     setFormError("");
     setModalOpen(true);
@@ -118,7 +121,7 @@ export default function ProjectsAdmin() {
       if (editing) await api.updateProject(editing.id, form);
       else await api.createProject(form);
       setModalOpen(false);
-      setNotice(editing ? "Projet mis à jour et publié sur le portfolio." : "Projet créé avec succès.");
+      setNotice(editing ? "Projet mis à jour." : "Projet créé avec succès.");
       await load();
       await refreshPublic();
     } catch (saveError) {
@@ -160,40 +163,53 @@ export default function ProjectsAdmin() {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-5"
+    >
       <PageHeader
         eyebrow="Contenu"
-        title="Projets"
-        description="Créez, modifiez, publiez ou masquez vos projets. Les modifications apparaissent immédiatement sur le portfolio."
-        actions={<Button icon={Plus} onClick={openCreate}>Nouveau projet</Button>}
+        title="Gestion des projets"
+        description="Créez, modifiez, publiez ou masquez vos réalisations. Les modifications sont synchronisées en direct."
+        actions={
+          <Button icon={Plus} onClick={openCreate}>
+            Nouveau projet
+          </Button>
+        }
       />
 
       {error && <Alert type="error" onClose={() => setError("")}>{error}</Alert>}
       {notice && <Alert type="success" onClose={() => setNotice("")}>{notice}</Alert>}
 
-      <Panel className="mb-4 p-3">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+      {/* Toolbar */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Rechercher un projet ou un tag…"
-            className="admin-input pl-10"
+            placeholder="Rechercher par titre ou tag..."
+            className="h-[38px] w-full rounded-lg bg-[#081127] border border-white/10 pl-9 pr-3 text-xs sm:text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-      </Panel>
+        <div className="text-xs font-semibold text-slate-400 shrink-0">
+          {filtered.length} projet{filtered.length > 1 ? "s" : ""}
+        </div>
+      </div>
 
       {loading ? (
-        <LoadingList rows={4} />
+        <LoadingList rows={3} />
       ) : filtered.length === 0 ? (
-        <Panel className="p-4">
+        <Panel>
           <EmptyState
             icon={FolderKanban}
-            title={items.length === 0 ? "Aucun projet" : "Aucun résultat"}
+            title={items.length === 0 ? "Aucun projet" : "Aucun résultat trouvé"}
             description={
               items.length === 0
-                ? "Ajoutez votre premier projet pour enrichir votre portfolio."
-                : "Essayez un autre mot-clé."
+                ? "Ajoutez votre premier projet pour mettre en avant vos réalisations."
+                : "Aucun projet ne correspond à votre recherche."
             }
             action={items.length === 0 ? <Button icon={Plus} onClick={openCreate}>Créer un projet</Button> : undefined}
           />
@@ -201,54 +217,105 @@ export default function ProjectsAdmin() {
       ) : (
         <div className="space-y-3">
           {filtered.map((project) => (
-            <Panel key={project.id} className="p-3 sm:p-4">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="h-28 w-full shrink-0 overflow-hidden rounded-xl border border-white/10 bg-white/5 sm:h-20 sm:w-32">
+            <Panel
+              key={project.id}
+              className="p-4 sm:p-5 hover:border-white/20 transition-all duration-150"
+            >
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+                {/* Image Preview */}
+                <div className="h-24 w-full sm:w-36 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-[#081127]">
                   {project.image ? (
-                    <img src={project.image} alt="" className="h-full w-full object-cover" />
+                    <img
+                      src={project.image}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <FolderKanban className="h-6 w-6 text-slate-600" />
+                    <div className="flex h-full items-center justify-center text-slate-500">
+                      <FolderKanban className="h-6 w-6 opacity-50" />
                     </div>
                   )}
                 </div>
 
-                <div className="min-w-0 flex-1">
+                {/* Content Info */}
+                <div className="min-w-0 flex-1 space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="truncate text-sm font-bold text-white">
-                      {project.title.en || project.title.fr || project.title.de || project.title.ar}
+                    <h3 className="text-sm sm:text-base font-bold text-white">
+                      {project.title.fr || project.title.en}
                     </h3>
-                    <Badge tone={project.published ? "green" : "amber"}>
+                    <Badge tone={project.published ? "green" : "slate"}>
                       {project.published ? "Publié" : "Brouillon"}
                     </Badge>
                   </div>
-                  <p className="mt-1 line-clamp-2 text-xs text-slate-400">
+
+                  <p className="line-clamp-2 text-xs text-slate-400 leading-normal">
                     {project.description.fr || project.description.en}
                   </p>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {project.tags.map((tag) => (
-                      <Badge key={tag} tone="blue">{tag}</Badge>
-                    ))}
-                  </div>
+
+                  {/* Tags */}
+                  {project.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-0.5">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-slate-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <Button
-                    variant="ghost"
-                    className="px-3 py-2"
-                    icon={project.published ? EyeOff : Eye}
-                    onClick={() => void togglePublished(project)}
-                    loading={busyId === project.id}
-                    title={project.published ? "Masquer" : "Publier"}
+                {/* Actions */}
+                <div className="flex items-center gap-1.5 self-end sm:self-center shrink-0 border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0 w-full sm:w-auto justify-end">
+                  {project.demo && (
+                    <a
+                      href={project.demo}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-white/10 transition"
+                      title="Voir la démo"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  )}
+                  {project.github && (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-white/10 transition"
+                      title="Voir le code GitHub"
+                    >
+                      <Github className="h-4 w-4" />
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => togglePublished(project)}
+                    disabled={busyId === project.id}
+                    className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                    title={project.published ? "Passer en brouillon" : "Publier"}
                   >
-                    <span className="hidden md:inline">{project.published ? "Masquer" : "Publier"}</span>
-                  </Button>
-                  <Button variant="secondary" className="px-3 py-2" icon={Pencil} onClick={() => openEdit(project)}>
-                    <span className="hidden md:inline">Modifier</span>
-                  </Button>
-                  <Button variant="danger" className="px-3 py-2" icon={Trash2} onClick={() => setDeleting(project)}>
-                    <span className="sr-only">Supprimer</span>
-                  </Button>
+                    {project.published ? <Eye className="h-4 w-4 text-emerald-400" /> : <EyeOff className="h-4 w-4" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => openEdit(project)}
+                    className="rounded-lg p-2 text-slate-400 hover:text-blue-300 hover:bg-white/10 transition cursor-pointer"
+                    title="Modifier"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleting(project)}
+                    className="rounded-lg p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </Panel>
@@ -256,84 +323,93 @@ export default function ProjectsAdmin() {
         </div>
       )}
 
+      {/* Modal Edit / Create */}
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         title={editing ? "Modifier le projet" : "Nouveau projet"}
-        description="Les champs vides utilisent automatiquement la traduction anglaise en secours."
         wide
         footer={
           <>
-            <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={saving}>Annuler</Button>
+            <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={saving}>
+              Annuler
+            </Button>
             <Button type="submit" form="project-form" loading={saving}>
               {editing ? "Enregistrer" : "Créer le projet"}
             </Button>
           </>
         }
       >
-        <form id="project-form" onSubmit={submit} className="space-y-5">
+        <form id="project-form" onSubmit={submit} className="space-y-4">
           {formError && <Alert type="error">{formError}</Alert>}
 
           <LocalizedField
-            label="Titre"
+            label="Titre du projet"
             required
             value={form.title}
             onChange={(title) => setForm({ ...form, title })}
-            placeholder="PrésenceQR"
+            placeholder="Système IA d'audit financier"
           />
 
           <LocalizedField
             label="Description"
             required
             multiline
-            rows={4}
+            rows={3}
             value={form.description}
             onChange={(description) => setForm({ ...form, description })}
-            placeholder="Décrivez le projet, les technologies et les résultats…"
+            placeholder="Description détaillée du projet et des technologies utilisées..."
           />
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <TagsInput value={form.tags} onChange={(tags) => setForm({ ...form, tags })} />
-            <Field label="Statut">
-              <div className="flex h-[42px] items-center rounded-xl border border-white/10 bg-white/[0.02] px-4">
-                <Toggle
-                  checked={form.published}
-                  onChange={(published) => setForm({ ...form, published })}
-                  label={form.published ? "Visible sur le portfolio" : "Brouillon privé"}
-                />
-              </div>
-            </Field>
-          </div>
+          <TagsInput
+            value={form.tags}
+            onChange={(tags) => setForm({ ...form, tags })}
+            label="Technologies / Tags"
+            hint="Séparez par des virgules (ex: React, Python, OpenCV)"
+          />
 
-          <ImageUploader value={form.image} onChange={(image) => setForm({ ...form, image })} />
+          <ImageUploader
+            value={form.image}
+            onChange={(image) => setForm({ ...form, image })}
+            label="Image de couverture"
+          />
 
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Lien GitHub">
               <TextInput
                 value={form.github}
-                placeholder="https://github.com/…"
+                placeholder="https://github.com/..."
                 onChange={(event) => setForm({ ...form, github: event.target.value })}
               />
             </Field>
-            <Field label="Lien démo">
+            <Field label="Lien démo en direct">
               <TextInput
                 value={form.demo}
-                placeholder="https://…"
+                placeholder="https://..."
                 onChange={(event) => setForm({ ...form, demo: event.target.value })}
               />
             </Field>
           </div>
+
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+            <Toggle
+              checked={form.published}
+              onChange={(published) => setForm({ ...form, published })}
+              label="Publier immédiatement sur le portfolio"
+            />
+          </div>
         </form>
       </Modal>
 
+      {/* Delete Confirmation */}
       <ConfirmDialog
         open={Boolean(deleting)}
         title="Supprimer ce projet ?"
-        description={`« ${deleting?.title.en || deleting?.title.fr || "" } » sera définitivement supprimé du portfolio. Cette action est irréversible.`}
+        description={`« ${deleting?.title.fr || deleting?.title.en || ""} » sera définitivement supprimé.`}
         loading={deletingBusy}
         onCancel={() => setDeleting(null)}
         onConfirm={() => void confirmDelete()}
       />
-    </div>
+    </motion.div>
   );
 }
