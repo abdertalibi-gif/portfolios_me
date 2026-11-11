@@ -32,6 +32,7 @@ const emptyForm: ProjectInput = {
   github: "",
   demo: "",
   published: true,
+  featured: false,
 };
 
 export default function ProjectsAdmin() {

@@ -70,10 +70,10 @@ export default function ExperienceAdmin() {
   const openEdit = (item: ExperienceItem) => {
     setEditing(item);
     setForm({
-      role: { ...item.role },
-      company: { ...item.company },
-      location: { ...item.location },
-      description: { ...item.description },
+      role: { ...emptyLocalized(), ...item.role },
+      company: { ...emptyLocalized(), ...item.company },
+      location: { ...emptyLocalized(), ...(item.location ?? {}) },
+      description: { ...emptyLocalized(), ...(item.description ?? {}) },
       period: item.period,
       employmentType: item.employmentType,
     });
@@ -163,23 +163,23 @@ export default function ExperienceAdmin() {
                   <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="text-sm font-bold text-white">
-                        {item.role.fr || item.role.en || item.role.de || item.role.ar}
+                        {item.role?.fr || item.role?.en || item.role?.de || item.role?.ar}
                       </h3>
                       {item.period && <Badge tone="orange">{item.period}</Badge>}
                       {item.employmentType && <Badge tone="slate">{item.employmentType}</Badge>}
                     </div>
                     <p className="text-xs font-semibold text-purple-300">
-                      {item.company.fr || item.company.en || "—"}
+                      {item.company?.fr || item.company?.en || "—"}
                     </p>
-                    {(item.location.fr || item.location.en) && (
+                    {(item.location?.fr || item.location?.en) && (
                       <p className="inline-flex items-center gap-1 text-[11px] text-slate-400">
                         <MapPin className="h-3 w-3" />
-                        {item.location.fr || item.location.en}
+                        {item.location?.fr || item.location?.en}
                       </p>
                     )}
-                    {(item.description.fr || item.description.en) && (
+                    {(item.description?.fr || item.description?.en) && (
                       <p className="text-xs text-slate-400 leading-normal line-clamp-2 pt-1">
-                        {item.description.fr || item.description.en}
+                        {item.description?.fr || item.description?.en}
                       </p>
                     )}
                   </div>
@@ -282,7 +282,7 @@ export default function ExperienceAdmin() {
       <ConfirmDialog
         open={Boolean(deleting)}
         title="Supprimer cette expérience ?"
-        description={`« ${deleting?.role.fr || deleting?.role.en || ""} » sera retirée du portfolio.`}
+        description={`« ${deleting?.role?.fr || deleting?.role?.en || ""} » sera retirée du portfolio.`}
         loading={deletingBusy}
         onCancel={() => setDeleting(null)}
         onConfirm={() => void confirmDelete()}

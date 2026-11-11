@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Github, Linkedin, Mail, MapPin, Phone, Save, Send, FileText } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Phone, Save, Send, FileText, Upload, CheckCircle2, ExternalLink } from "lucide-react";
 import type { ContactContent } from "../../../shared/types";
 import { api } from "../../services/api";
 import { useContent } from "../../context/ContentContext";
@@ -20,8 +20,10 @@ export default function ContactAdmin() {
   const [form, setForm] = useState<ContactContent>(emptyForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -42,6 +44,24 @@ export default function ContactAdmin() {
   }, []);
 
   const update = (field: keyof ContactContent, value: string) => setForm({ ...form, [field]: value });
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setError("");
+    setNotice("");
+    setUploadingPdf(true);
+    try {
+      const url = await api.uploadFile(file);
+      setForm((prev) => ({ ...prev, cvUrl: url }));
+      setNotice(`CV importé avec succès : ${file.name}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur lors de l'upload du CV");
+    } finally {
+      setUploadingPdf(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -124,15 +144,50 @@ export default function ContactAdmin() {
                 </div>
               </Field>
 
-              <Field label="Lien du CV (PDF)" hint="Chemin ou URL du CV">
-                <div className="relative">
-                  <FileText className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-                  <TextInput
-                    className="pl-9"
-                    value={form.cvUrl}
-                    onChange={(event) => update("cvUrl", event.target.value)}
-                    placeholder="/assets/cv.pdf"
-                  />
+              <Field label="CV (PDF ou Lien)" hint="Sélectionnez un PDF depuis votre PC ou entrez une URL">
+                <div className="space-y-2">
+                  <div className="relative">
+                    <FileText className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                    <TextInput
+                      className="pl-9"
+                      value={form.cvUrl}
+                      onChange={(event) => update("cvUrl", event.target.value)}
+                      placeholder="/uploads/... ou https://..."
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      id="cv-upload-input"
+                    />
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      icon={Upload}
+                      loading={uploadingPdf}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {uploadingPdf ? "Téléversement..." : "Choisir un PDF sur mon PC"}
+                    </Button>
+
+                    {form.cvUrl && (
+                      <a
+                        href={form.cvUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 font-medium px-2 py-1 rounded bg-blue-500/10 border border-blue-500/20 transition"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        Tester / Ouvrir le CV
+                      </a>
+                    )}
+                  </div>
                 </div>
               </Field>
 

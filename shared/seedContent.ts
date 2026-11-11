@@ -304,7 +304,7 @@ export const seedAbout: AboutContent = {
 };
 
 export const seedContact: ContactContent = {
-  email: "as.kouskous@edu.umi.ac.ma",
+  email: "talibi.abder@gmail.com",
   phone: "",
   location: "Meknès, Maroc",
   github: "https://github.com/atalibi",

@@ -147,7 +147,7 @@ export function Panel({ className, children }: { className?: string; children: R
   return (
     <div
       className={cn(
-        "rounded-xl border border-white/10 bg-[#0D1730]/75 shadow-sm p-4 sm:p-5 backdrop-blur-sm transition-all duration-200",
+        "rounded-xl border border-white/10 bg-[#0D1730]/75 shadow-sm p-5 sm:p-6 backdrop-blur-sm transition-all duration-200",
         className,
       )}
     >
@@ -169,24 +169,24 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
         {eyebrow && (
-          <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-blue-400">
+          <p className="mb-1 text-[11px] font-bold uppercase tracking-wider text-blue-400">
             {eyebrow}
           </p>
         )}
-        <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white leading-none">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
           {title}
         </h1>
         {description && (
-          <p className="mt-1 max-w-2xl text-[11px] text-slate-400 leading-normal">
+          <p className="mt-1 max-w-2xl text-xs sm:text-sm text-slate-400 leading-normal">
             {description}
           </p>
         )}
       </div>
       {actions && (
-        <div className="flex shrink-0 flex-wrap items-center gap-2 self-start sm:self-center">
+        <div className="flex shrink-0 flex-wrap items-center gap-2.5 self-start sm:self-center">
           {actions}
         </div>
       )}
@@ -362,7 +362,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-white/10 bg-white/[0.02] px-6 py-6 text-center">
+    <div className="flex flex-col items-center justify-center rounded-xl border border-white/10 bg-white/[0.02] px-6 py-10 text-center">
       <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]">
         <Icon className="h-6 w-6 text-blue-400" />
       </div>
@@ -455,7 +455,7 @@ export function Modal({
             )}
           >
             {/* Header */}
-            <div className="flex items-start justify-between border-b border-white/10 px-4 py-3">
+            <div className="flex items-start justify-between border-b border-white/10 px-5 py-4">
               <div>
                 <h2 className="text-base sm:text-lg font-bold text-white">
                   {title}
@@ -473,13 +473,13 @@ export function Modal({
             </div>
 
             {/* Body */}
-            <div className="admin-scroll flex-1 overflow-y-auto px-4 py-3 space-y-4">
+            <div className="admin-scroll flex-1 overflow-y-auto px-5 py-4 space-y-4">
               {children}
             </div>
 
             {/* Footer */}
             {footer && (
-              <div className="flex flex-wrap justify-end gap-2 border-t border-white/10 bg-[#081127]/60 px-4 py-2">
+              <div className="flex flex-wrap justify-end gap-2.5 border-t border-white/10 bg-[#081127]/60 px-5 py-3">
                 {footer}
               </div>
             )}

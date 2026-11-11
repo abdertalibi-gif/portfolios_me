@@ -182,8 +182,8 @@ export default function AdminLayout() {
         {sidebarContent}
       </aside>
 
-      {/* Main Content Area - margin-left prevents sidebar overlap on desktop */}
-      <div className="admin-main ml-sidebar-desktop">
+      {/* Main Content Area */}
+      <div className="admin-main">
         {/* Header */}
         <header className="admin-header">
           <div className="header-left">

@@ -158,7 +158,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/10 py-6 text-center text-slate-400">
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/10 py-10 text-center text-slate-400">
               <Inbox className="mb-2 h-6 w-6 text-slate-500" />
               <p className="text-xs font-semibold text-slate-300">Aucun message pour le moment</p>
               <p className="mt-0.5 text-[11px] text-slate-500">
@@ -224,7 +224,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/10 py-6 text-center text-slate-400">
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/10 py-10 text-center text-slate-400">
               <Briefcase className="mb-2 h-6 w-6 text-slate-500" />
               <p className="text-xs font-semibold text-slate-300">Aucun projet enregistré</p>
             </div>

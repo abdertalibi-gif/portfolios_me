@@ -67,7 +67,12 @@ export default function EducationAdmin() {
 
   const openEdit = (item: EducationItem) => {
     setEditing(item);
-    setForm({ degree: { ...item.degree }, institution: { ...item.institution }, description: { ...item.description }, period: item.period });
+    setForm({
+      degree: { ...emptyLocalized(), ...item.degree },
+      institution: { ...emptyLocalized(), ...item.institution },
+      description: { ...emptyLocalized(), ...(item.description ?? {}) },
+      period: item.period,
+    });
     setFormError("");
     setModalOpen(true);
   };
@@ -154,16 +159,16 @@ export default function EducationAdmin() {
                   <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="text-sm font-bold text-white">
-                        {item.degree.fr || item.degree.en || item.degree.de || item.degree.ar}
+                        {item.degree?.fr || item.degree?.en || item.degree?.de || item.degree?.ar}
                       </h3>
                       {item.period && <Badge tone="blue">{item.period}</Badge>}
                     </div>
                     <p className="text-xs text-slate-300 font-medium">
-                      {item.institution.fr || item.institution.en || "—"}
+                      {item.institution?.fr || item.institution?.en || "—"}
                     </p>
-                    {(item.description.fr || item.description.en) && (
+                    {(item.description?.fr || item.description?.en) && (
                       <p className="text-xs text-slate-400 leading-normal line-clamp-2">
-                        {item.description.fr || item.description.en}
+                        {item.description?.fr || item.description?.en}
                       </p>
                     )}
                   </div>
@@ -246,7 +251,7 @@ export default function EducationAdmin() {
       <ConfirmDialog
         open={Boolean(deleting)}
         title="Supprimer cette formation ?"
-        description={`« ${deleting?.degree.fr || deleting?.degree.en || ""} » sera retirée du portfolio.`}
+        description={`« ${deleting?.degree?.fr || deleting?.degree?.en || ""} » sera retirée du portfolio.`}
         loading={deletingBusy}
         onCancel={() => setDeleting(null)}
         onConfirm={() => void confirmDelete()}

@@ -124,7 +124,7 @@ export default function Contact() {
                     type="text"
                     value={formValues.subject}
                     onChange={(e) => setFormValues({ ...formValues, subject: e.target.value })}
-                    className={`w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-brand-text focus:outline-none focus:border-brand-primary focus:bg-white transition-all font-bold ${isAr ? 'text-right' : ''}`}
+                    className={`w-full bg-brand-input-bg border border-brand-input-border rounded-2xl px-6 py-4 text-brand-text focus:outline-none focus:border-brand-primary focus:bg-brand-bg transition-all font-bold ${isAr ? 'text-right' : ''}`}
                   />
                 </div>
                 <div className="space-y-3">
@@ -136,7 +136,7 @@ export default function Contact() {
                     rows={4}
                     value={formValues.message}
                     onChange={(e) => setFormValues({ ...formValues, message: e.target.value })}
-                    className={`w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-brand-text focus:outline-none focus:border-brand-primary focus:bg-white transition-all font-bold resize-none ${isAr ? 'text-right' : ''}`}
+                    className={`w-full bg-brand-input-bg border border-brand-input-border rounded-2xl px-6 py-4 text-brand-text focus:outline-none focus:border-brand-primary focus:bg-brand-bg transition-all font-bold resize-none ${isAr ? 'text-right' : ''}`}
                   />
                 </div>
 

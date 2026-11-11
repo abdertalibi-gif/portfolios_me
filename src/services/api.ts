@@ -45,7 +45,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return data as T;
 }
 
-export type ProjectInput = Pick<Project, "title" | "description" | "tags" | "image" | "github" | "demo" | "published">;
+export type ProjectInput = Pick<Project, "title" | "description" | "tags" | "image" | "github" | "demo" | "published"> & { featured?: boolean };
 export type SkillCategoryInput = Pick<SkillCategory, "key" | "name">;
 export type SkillInput = Pick<Skill, "categoryId" | "name">;
 export type EducationInput = Pick<EducationItem, "degree" | "institution" | "description" | "period">;
@@ -164,12 +164,29 @@ export const api = {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
       throw new ApiError("Format non supporté. Utilisez JPEG, PNG ou WebP.", 400);
     }
-    if (file.size > 5 * 1024 * 1024) {
-      throw new ApiError("L'image ne doit pas dépasser 5 Mo.", 400);
+    if (file.size > 10 * 1024 * 1024) {
+      throw new ApiError("L'image ne doit pas dépasser 10 Mo.", 400);
     }
     const data = await request<{ url: string }>("/api/admin/uploads", {
       method: "POST",
       headers: { "Content-Type": file.type, "X-Admin-Request": "1" },
+      body: file,
+    });
+    return data.url;
+  },
+
+  uploadFile: async (file: File): Promise<string> => {
+    const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type) && !file.name.toLowerCase().endsWith(".pdf")) {
+      throw new ApiError("Format non supporté. Seuls les fichiers PDF et images sont acceptés.", 400);
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      throw new ApiError("Le fichier ne doit pas dépasser 15 Mo.", 400);
+    }
+    const contentType = file.type || "application/pdf";
+    const data = await request<{ url: string }>("/api/admin/uploads", {
+      method: "POST",
+      headers: { "Content-Type": contentType, "X-Admin-Request": "1" },
       body: file,
     });
     return data.url;

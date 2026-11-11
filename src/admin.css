@@ -100,42 +100,38 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Desktop layout: fixed sidebar + flex main content */
+/* Desktop layout: in-flow sticky sidebar + flex main content */
 @media (min-width: 1024px) {
   .admin-shell {
     flex-direction: row;
   }
 
   .admin-sidebar {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
     height: 100vh;
     flex-shrink: 0;
     z-index: var(--z-sidebar);
-    display: block !important;
+    display: flex !important;
     flex-direction: column;
     background: var(--color-sidebar);
     border-right: 1px solid var(--color-border);
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
   .admin-main {
-    flex: 1;
+    flex: 1 1 0%;
     min-width: 0;
-    width: 100%;
+    width: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     background: var(--color-bg);
     overflow-x: hidden;
-  }
-
-  /* Margin-left for desktop to prevent sidebar overlap */
-  .ml-sidebar-desktop {
-    margin-left: var(--sidebar-width);
   }
 }
 

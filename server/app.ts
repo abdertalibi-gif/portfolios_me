@@ -581,14 +581,22 @@ export function createApiApp(options: AppOptions = {}): express.Express {
   admin.post(
     "/uploads",
     requireAdminHeader,
-    express.raw({ type: ["image/jpeg", "image/png", "image/webp"], limit: "5mb" }),
+    express.raw({ type: ["image/jpeg", "image/png", "image/webp", "application/pdf"], limit: "15mb" }),
     handle((req, res) => {
       const buffer = req.body as Buffer;
       if (!Buffer.isBuffer(buffer) || buffer.length === 0) {
-        throw new ApiError("Fichier image requis (JPEG, PNG ou WebP)");
+        throw new ApiError("Fichier requis (JPEG, PNG, WebP ou PDF)");
       }
-      const extension = detectImageExtension(buffer);
-      if (!extension) throw new ApiError("Format d'image non supporté");
+      
+      let extension: string | null = null;
+      // Check for PDF magic numbers: %PDF
+      if (buffer.length >= 4 && buffer.toString("ascii", 0, 4) === "%PDF") {
+        extension = "pdf";
+      } else {
+        extension = detectImageExtension(buffer);
+      }
+
+      if (!extension) throw new ApiError("Format non supporté (images ou PDF acceptés)");
       mkdirSync(UPLOADS_DIR, { recursive: true });
       const filename = `${randomUUID()}.${extension}`;
       writeFileSync(join(UPLOADS_DIR, filename), buffer);
