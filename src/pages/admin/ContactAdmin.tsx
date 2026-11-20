@@ -14,7 +14,6 @@ const emptyForm: ContactContent = {
   linkedin: "",
   cvUrl: "",
 };
-
 export default function ContactAdmin() {
   const { refresh: refreshPublic } = useContent();
   const [form, setForm] = useState<ContactContent>(emptyForm);
@@ -24,7 +23,6 @@ export default function ContactAdmin() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
     let active = true;
     api
@@ -144,7 +142,10 @@ export default function ContactAdmin() {
                 </div>
               </Field>
 
-              <Field label="CV (PDF ou Lien)" hint="Sélectionnez un PDF depuis votre PC ou entrez une URL">
+              <Field
+                label="CV (PDF, Excel ou Lien)"
+                hint="Formats acceptés : PDF, Excel (.xls, .xlsx). Vous pouvez aussi coller une URL."
+              >
                 <div className="space-y-2">
                   <div className="relative">
                     <FileText className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
@@ -160,7 +161,7 @@ export default function ContactAdmin() {
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept=".pdf,application/pdf"
+                      accept=".pdf,.xls,.xlsx,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                       onChange={handleFileUpload}
                       className="hidden"
                       id="cv-upload-input"
@@ -173,7 +174,7 @@ export default function ContactAdmin() {
                       loading={uploadingPdf}
                       onClick={() => fileInputRef.current?.click()}
                     >
-                      {uploadingPdf ? "Téléversement..." : "Choisir un PDF sur mon PC"}
+                      {uploadingPdf ? "Téléversement..." : "Choisir un fichier (PDF / Excel)"}
                     </Button>
 
                     {form.cvUrl && (

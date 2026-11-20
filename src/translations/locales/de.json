@@ -5,64 +5,67 @@
     "skills": "Fähigkeiten",
     "projects": "Projekte",
     "education": "Bildung",
-    "experience": "Erfahrung",
-    "certifications": "Zertifikate",
+    "experience": "Akademisch",
+    "certifications": "Erfolge",
     "contact": "Kontakt",
-    "cv": "Lebenslauf"
+    "cv": "Lebenslauf ansehen"
   },
   "hero": {
-
+    "badge": "SDIA-Master · Université Moulay Ismaïl",
     "greeting": "Hallo, ich bin",
     "name": "Abderrahim Talibi",
     "title": "Softwareentwickler | KI & Backend",
-    "subtitle": "Entwicklung intelligenter Anwendungen, skalierbarer Backend-Systeme und innovativer KI-Lösungen mit Fokus auf Data Science.",
+    "subtitle": "Webanwendungen, Python-APIs und intelligente Systeme — mit einem Anspruch: getesteter, dokumentierter und deploybarer Code.",
     "cta_work": "Projekte ansehen",
-    "cta_cv": "Lebenslauf laden",
+    "cta_cv": "Lebenslauf ansehen",
     "years_exp": "Jahre Erfahrung",
     "ai_expert": "KI-Experte"
   },
   "about": {
     "title": "Über mich",
     "subtitle": "Innovation durch KI & Daten",
-    "description": "Ich bin Softwareentwickler mit Spezialisierung auf Data Science und Künstliche Intelligenz von der Université Moulay Ismail. Meine Leidenschaft liegt in der Entwicklung skalierbarer Systeme und intelligenter Anwendungen. Ich verbinde akademische Exzellenz mit technischem Fachwissen.",
+    "description": "Masterstudent in Data Science und Künstlicher Intelligenz (SDIA) an der Université Moulay Ismaïl, Inhaber einer Licence d'Excellence im selben Fach. Ich entwickle Webanwendungen und APIs mit Python (Django, FastAPI), mit starkem Interesse an Backend-Engineering, intelligenten Systemen und Daten. Ich lerne durch Bauen: Jedes akademische oder persönliche Projekt ist eine Gelegenheit, getesteten, dokumentierten und deploybaren Code zu liefern.",
     "academic": "Akademischer Weg",
     "specialization": "Data Science & KI",
     "goals": "Berufliche Ziele",
     "strengths": "Kernkompetenzen",
-    "backend_dev": "Backend-Entw.",
-    "scalable_systems": "Skalierbare Syst."
+    "backend_dev": "Backend-Entwicklung",
+    "scalable_systems": "Skalierbare Systeme",
+    "degree": "SDIA-Master · 2026–2028"
   },
   "skills": {
     "title": "Technische Fähigkeiten",
     "subtitle": "Spezialisierte Expertise",
     "categories": {
       "backend": "Backend-Entwicklung",
-      "frontend": "Frontend-Entwicklung",
-      "database": "Datenbankmanagement",
-      "devops": "DevOps & Cloud",
+      "frontend": "Frontend & Mobile",
+      "database": "Datenbanken",
+      "devops": "DevOps & Werkzeuge",
       "ai": "KI & Machine Learning",
       "datascience": "Data Science"
     }
   },
   "projects": {
-    "title": "Ausgewählte Projekte",
-    "subtitle": "Software-Innovationen",
-    "description": "Entwicklung skalierbarer Lösungen und intelligenter KI-Systeme für komplexe Probleme.",
+    "title": "Projekte",
+    "subtitle": "Ausgewählte Software-Innovationen",
+    "description": "Akademische und persönliche Projekte — vom Entwurf bis zur Umsetzung, mit dokumentiertem Code und bewussten technischen Entscheidungen.",
     "view_source": "Quellcode",
-    "live_demo": "Live-Vorschau"
+    "live_demo": "Live-Demo",
+    "repository_private": "Privates Repository"
   },
   "education": {
     "title": "Bildung",
     "subtitle": "Akademischer Werdegang"
   },
   "experience": {
-    "title": "Erfahrung",
-    "subtitle": "Berufliche Meilensteine"
+    "title": "Akademische Projekte",
+    "subtitle": "& Eigenarbeit",
+    "description": "Während des Studiums oder in der Freizeit umgesetzt: Entwurf, Entwicklung, Tests und Dokumentation."
   },
   "certifications": {
-    "title": "Zertifikate & Erfolge",
-    "subtitle": "Anerkannte Exzellenz",
-    "view": "Zertifikat ansehen"
+    "title": "Akademische",
+    "subtitle": "Erfolge",
+    "view": "Projekt ansehen"
   },
   "contact": {
     "title": "Kontakt",
@@ -75,7 +78,9 @@
       "message": "Nachricht",
       "submit": "Nachricht senden",
       "sending": "Wird gesendet...",
-      "success": "Nachricht erfolgreich gesendet!"
+      "success": "Nachricht gesendet!",
+      "error": "Die Nachricht konnte nicht gesendet werden. Bitte später erneut versuchen.",
+      "privacy": "Ihre Daten werden nur zur Beantwortung Ihrer Nachricht verwendet."
     }
   },
   "footer": {

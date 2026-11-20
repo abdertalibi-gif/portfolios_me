@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
+import CvPage from "./pages/CvPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
@@ -43,6 +44,7 @@ export default function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/cv" element={<CvPage />} />
             <Route path="/admin/login" element={<Login />} />
 
             <Route

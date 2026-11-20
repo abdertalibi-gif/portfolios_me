@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Briefcase, Pencil, Plus, Trash2, MapPin } from "lucide-react";

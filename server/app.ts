@@ -1,4 +1,4 @@
-import express, { type NextFunction, type Request, type Response } from "express";
+﻿import express, { type NextFunction, type Request, type Response } from "express";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { join } from "node:path";
@@ -24,6 +24,7 @@ import {
   requireAuth,
   sameOriginGuard,
 } from "./auth";
+import { createResendEmail } from "./resend";
 import { ROOT_DIR, UPLOADS_DIR } from "./env";
 import { getAdminPublic, getDb, persist, setPassword, verifyPassword } from "./store";
 import {
@@ -102,7 +103,7 @@ function validateProject(body: Record<string, unknown>): Omit<Project, "id" | "o
     tags: asTags(body.tags),
     image: asImage(body.image),
     github: asLink(body.github, "Lien GitHub"),
-    demo: asLink(body.demo, "Lien démo"),
+    demo: asLink(body.demo, "Lien dÃ©mo"),
     published: asBool(body.published, true),
     featured: asBool(body.featured, false),
   };
@@ -112,22 +113,22 @@ function validateCategory(
   body: Record<string, unknown>,
   fallbackKey: string,
 ): Omit<SkillCategory, "id" | "order"> {
-  const name = asLocalized(body.name, "Nom de catégorie", { max: 120 });
+  const name = asLocalized(body.name, "Nom de catÃ©gorie", { max: 120 });
   return { key: asKey(body.key, fallbackKey), name };
 }
 
 function validateSkill(body: Record<string, unknown>): Omit<Skill, "id" | "order"> {
-  const categoryId = asText(body.categoryId, "Catégorie", { max: 80 });
+  const categoryId = asText(body.categoryId, "CatÃ©gorie", { max: 80 });
   if (!getDb().content.skillCategories.some((category) => category.id === categoryId)) {
-    throw new ApiError("Catégorie introuvable");
+    throw new ApiError("CatÃ©gorie introuvable");
   }
-  return { categoryId, name: asLocalized(body.name, "Compétence", { max: 100 }) };
+  return { categoryId, name: asLocalized(body.name, "CompÃ©tence", { max: 100 }) };
 }
 
 function validateEducation(body: Record<string, unknown>): Omit<EducationItem, "id" | "order"> {
   return {
-    degree: asLocalized(body.degree, "Diplôme", { max: 300 }),
-    institution: asLocalized(body.institution, "Établissement", { max: 300 }),
+    degree: asLocalized(body.degree, "DiplÃ´me", { max: 300 }),
+    institution: asLocalized(body.institution, "Ã‰tablissement", { max: 300 }),
     description: body.description ? asLocalized(body.description, "Description", { max: 3000 }) : { en: "", fr: "", de: "", ar: "" },
     period: asPeriod(body.period),
   };
@@ -152,7 +153,7 @@ function validateCertification(body: Record<string, unknown>): Omit<Certificatio
     link: asLink(body.link, "Lien"),
     image: asImage(body.image),
     expirationDate: asDateText(body.expirationDate, "Date d'expiration"),
-    credentialId: asText(body.credentialId, "Identifiant de crédit", { max: 100, required: false }),
+    credentialId: asText(body.credentialId, "Identifiant de crÃ©dit", { max: 100, required: false }),
   };
 }
 
@@ -234,6 +235,15 @@ export function createApiApp(options: AppOptions = {}): express.Express {
       persist();
       res.status(201).json({ ok: true, id: message.id });
     }),
+  );
+
+  const contactEmailLimiter = createRateLimiter(3, 60 * 1000);
+  app.post(
+    "/api/contact-email",
+    contactEmailLimiter,
+    async (req: Request, res: Response) => {
+      await createResendEmail(req, res);
+    },
   );
 
   const loginLimiter = createRateLimiter(10, 10 * 60 * 1000);
@@ -371,10 +381,10 @@ export function createApiApp(options: AppOptions = {}): express.Express {
     handle((req, res) => {
       const db = getDb();
       const body = (req.body || {}) as Record<string, unknown>;
-      const name = asLocalized(body.name, "Nom de catégorie", { max: 120 });
+      const name = asLocalized(body.name, "Nom de catÃ©gorie", { max: 120 });
       const draft = validateCategory(body, name.en || name.fr || "categorie");
       if (db.content.skillCategories.some((category) => category.key === draft.key)) {
-        throw new ApiError("Cette clé de catégorie existe déjà");
+        throw new ApiError("Cette clÃ© de catÃ©gorie existe dÃ©jÃ ");
       }
       const category: SkillCategory = {
         ...draft,
@@ -393,12 +403,12 @@ export function createApiApp(options: AppOptions = {}): express.Express {
     handle((req, res) => {
       const db = getDb();
       const category = db.content.skillCategories.find((item) => item.id === req.params.id);
-      if (!category) throw new ApiError("Catégorie introuvable", 404);
+      if (!category) throw new ApiError("CatÃ©gorie introuvable", 404);
       const body = (req.body || {}) as Record<string, unknown>;
-      const name = asLocalized(body.name, "Nom de catégorie", { max: 120 });
+      const name = asLocalized(body.name, "Nom de catÃ©gorie", { max: 120 });
       const draft = validateCategory(body, category.key);
       if (db.content.skillCategories.some((item) => item.id !== category.id && item.key === draft.key)) {
-        throw new ApiError("Cette clé de catégorie existe déjà");
+        throw new ApiError("Cette clÃ© de catÃ©gorie existe dÃ©jÃ ");
       }
       Object.assign(category, draft);
       persist();
@@ -412,7 +422,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
     handle((req, res) => {
       const db = getDb();
       const index = db.content.skillCategories.findIndex((item) => item.id === req.params.id);
-      if (index === -1) throw new ApiError("Catégorie introuvable", 404);
+      if (index === -1) throw new ApiError("CatÃ©gorie introuvable", 404);
       db.content.skills = db.content.skills.filter((skill) => skill.categoryId !== req.params.id);
       const [removed] = db.content.skillCategories.splice(index, 1);
       persist();
@@ -441,7 +451,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
     requireAdminHeader,
     handle((req, res) => {
       const skill = getDb().content.skills.find((item) => item.id === req.params.id);
-      if (!skill) throw new ApiError("Compétence introuvable", 404);
+      if (!skill) throw new ApiError("CompÃ©tence introuvable", 404);
       Object.assign(skill, validateSkill((req.body || {}) as Record<string, unknown>));
       persist();
       res.json({ item: skill });
@@ -454,7 +464,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
     handle((req, res) => {
       const db = getDb();
       const index = db.content.skills.findIndex((item) => item.id === req.params.id);
-      if (index === -1) throw new ApiError("Compétence introuvable", 404);
+      if (index === -1) throw new ApiError("CompÃ©tence introuvable", 404);
       const [removed] = db.content.skills.splice(index, 1);
       persist();
       res.json({ item: removed });
@@ -502,7 +512,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
       handle((req, res) => {
         const items = collection.items() as Array<{ id: string; order: number }>;
         const item = items.find((entry) => entry.id === req.params.id);
-        if (!item) throw new ApiError("Élément introuvable", 404);
+        if (!item) throw new ApiError("Ã‰lÃ©ment introuvable", 404);
         Object.assign(item, collection.validate((req.body || {}) as Record<string, unknown>));
         persist();
         res.json({ item });
@@ -516,7 +526,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
         const db = getDb();
         const list = db.content[collection.path] as unknown as Array<{ id: string }>;
         const index = list.findIndex((entry) => entry.id === req.params.id);
-        if (index === -1) throw new ApiError("Élément introuvable", 404);
+        if (index === -1) throw new ApiError("Ã‰lÃ©ment introuvable", 404);
         const [removed] = list.splice(index, 1);
         persist();
         res.json({ item: removed });
@@ -566,7 +576,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
       const body = (req.body || {}) as Record<string, unknown>;
       const contact: ContactContent = {
         email: asEmail(body.email, "Email"),
-        phone: asText(body.phone, "Téléphone", { required: false, max: 60 }),
+        phone: asText(body.phone, "TÃ©lÃ©phone", { required: false, max: 60 }),
         location: asText(body.location, "Localisation", { required: false, max: 160 }),
         github: asLink(body.github, "GitHub"),
         linkedin: asLink(body.linkedin, "LinkedIn"),
@@ -581,22 +591,46 @@ export function createApiApp(options: AppOptions = {}): express.Express {
   admin.post(
     "/uploads",
     requireAdminHeader,
-    express.raw({ type: ["image/jpeg", "image/png", "image/webp", "application/pdf"], limit: "15mb" }),
+    express.raw({
+      type: [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "application/pdf",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/octet-stream",
+      ],
+      limit: "15mb",
+    }),
     handle((req, res) => {
       const buffer = req.body as Buffer;
       if (!Buffer.isBuffer(buffer) || buffer.length === 0) {
-        throw new ApiError("Fichier requis (JPEG, PNG, WebP ou PDF)");
+        throw new ApiError("Fichier requis (PDF, Excel ou image)");
       }
-      
+
       let extension: string | null = null;
-      // Check for PDF magic numbers: %PDF
+      // PDF : signature %PDF
       if (buffer.length >= 4 && buffer.toString("ascii", 0, 4) === "%PDF") {
         extension = "pdf";
+      } else if (buffer.length >= 4 && buffer[0] === 0x50 && buffer[1] === 0x4b) {
+        // XLSX : archive ZIP contenant le classeur xl/workbook.xml
+        const probe = buffer.toString("latin1");
+        if (probe.includes("xl/workbook.xml") || probe.includes("xl/worksheets/")) {
+          extension = "xlsx";
+        }
+      } else if (
+        buffer.length >= 8 &&
+        buffer[0] === 0xd0 && buffer[1] === 0xcf && buffer[2] === 0x11 && buffer[3] === 0xe0 &&
+        buffer[4] === 0xa1 && buffer[5] === 0xb1 && buffer[6] === 0x1a && buffer[7] === 0xe1
+      ) {
+        // XLS : conteneur OLE2 (classeur binaire Excel)
+        extension = "xls";
       } else {
         extension = detectImageExtension(buffer);
       }
 
-      if (!extension) throw new ApiError("Format non supporté (images ou PDF acceptés)");
+      if (!extension) throw new ApiError("Format non supportÃ© (PDF, Excel ou image acceptÃ©s)");
       mkdirSync(UPLOADS_DIR, { recursive: true });
       const filename = `${randomUUID()}.${extension}`;
       writeFileSync(join(UPLOADS_DIR, filename), buffer);
@@ -644,17 +678,21 @@ export function createApiApp(options: AppOptions = {}): express.Express {
       });
     } else {
       app.get("/", (_req, res) => {
-        res.status(503).send("Build introuvable. Exécutez `npm run build` puis relancez le serveur.");
+        res.status(503).send("Build introuvable. ExÃ©cutez `npm run build` puis relancez le serveur.");
       });
     }
   }
 
   app.use((req, res, next) => {
-    if (!options.serveStatic && !req.path.startsWith("/api/") && !req.path.startsWith("/uploads/")) {
+    if (!options.serveStatic) {
       next();
       return;
     }
-    res.status(404).json({ error: "Route introuvable" });
+    if (!req.path.startsWith("/api/") && !req.path.startsWith("/uploads/") && !req.path.startsWith("/admin")) {
+      res.status(404).json({ error: "Route introuvable" });
+      return;
+    }
+    next();
   });
 
   app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {

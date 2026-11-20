@@ -19,14 +19,12 @@ import {
   Panel,
   TextInput,
 } from "../../components/admin/ui";
-
 const emptyForm: EducationInput = {
   degree: emptyLocalized(),
   institution: emptyLocalized(),
   description: emptyLocalized(),
   period: "",
 };
-
 export default function EducationAdmin() {
   const { refresh: refreshPublic } = useContent();
   const [items, setItems] = useState<EducationItem[]>([]);
@@ -40,7 +38,6 @@ export default function EducationAdmin() {
   const [formError, setFormError] = useState("");
   const [deleting, setDeleting] = useState<EducationItem | null>(null);
   const [deletingBusy, setDeletingBusy] = useState(false);
-
   const load = async () => {
     setLoading(true);
     setError("");
@@ -53,18 +50,15 @@ export default function EducationAdmin() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     void load();
   }, []);
-
   const openCreate = () => {
     setEditing(null);
     setForm({ ...emptyForm, degree: emptyLocalized(), institution: emptyLocalized(), description: emptyLocalized(), period: "" });
     setFormError("");
     setModalOpen(true);
   };
-
   const openEdit = (item: EducationItem) => {
     setEditing(item);
     setForm({
@@ -76,7 +70,6 @@ export default function EducationAdmin() {
     setFormError("");
     setModalOpen(true);
   };
-
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     setFormError("");
@@ -98,7 +91,6 @@ export default function EducationAdmin() {
       setSaving(false);
     }
   };
-
   const confirmDelete = async () => {
     if (!deleting) return;
     setDeletingBusy(true);
@@ -150,7 +142,7 @@ export default function EducationAdmin() {
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <Panel key={item.id} className="p-4 sm:p-5 hover:border-white/20 transition-all duration-150">
+            <Panel key={item.id} className="p-4 sm:p-5 rounded-3xl border border-brand-text/10 card-shadow hover:border-brand-primary/20 hover:card-shadow-hover transition-all duration-150">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-start gap-3.5 min-w-0">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 text-cyan-400">

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Download, ChevronDown, Sun, Moon } from "lucide-react";
+import { Menu, X, ChevronDown, Sun, Moon, Github, Linkedin } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useContent } from "../context/ContentContext";
 
 const languages = [
   { code: "fr", name: "Français", flag: "🇫🇷" },
@@ -12,6 +13,7 @@ const languages = [
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
+  const { content } = useContent();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [langDropdown, setLangDropdown] = useState(false);
@@ -51,6 +53,7 @@ export default function Navbar() {
   ];
 
   const currentLang = languages.find((l) => l.code === i18n.language) || languages[0];
+  const isAr = i18n.language === 'ar';
 
   return (
     <nav
@@ -90,11 +93,33 @@ export default function Navbar() {
         </div>
 
         {/* Zone 3: Actions */}
-        <div className="flex items-center gap-3 xl:gap-4 shrink-0">
+        <div className="flex items-center gap-2.5 xl:gap-3 shrink-0">
+          {/* Social links (desktop) */}
+          <div className="hidden xl:flex items-center gap-1 mr-1">
+            <a
+              href={content.contact.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-alt transition-colors"
+            >
+              <Github className="w-[18px] h-[18px]" />
+            </a>
+            <a
+              href={content.contact.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-alt transition-colors"
+            >
+              <Linkedin className="w-[18px] h-[18px]" />
+            </a>
+          </div>
+
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 text-brand-text-muted hover:text-brand-primary bg-brand-bg-alt rounded-xl transition-all border border-brand-text/10"
+            className="flex h-10 w-10 items-center justify-center text-brand-text-muted hover:text-brand-primary bg-brand-bg-alt rounded-xl transition-all border border-brand-text/10"
             aria-label="Toggle Theme"
           >
             {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -104,10 +129,10 @@ export default function Navbar() {
           <div className="relative">
             <button
               onClick={() => setLangDropdown(!langDropdown)}
-              className="flex items-center gap-2 px-3 py-2 text-[13px] font-bold text-brand-text-muted hover:text-brand-primary bg-brand-bg-alt rounded-xl transition-all border border-brand-text/10"
+              className="flex h-10 items-center gap-2 px-3 text-[13px] font-bold text-brand-text-muted hover:text-brand-primary bg-brand-bg-alt rounded-xl transition-all border border-brand-text/10"
             >
-              <span>{currentLang.flag}</span>
-              <span className="hidden sm:inline">{currentLang.code.toUpperCase()}</span>
+              <span className="leading-none">{currentLang.flag}</span>
+              <span className="hidden sm:inline leading-none">{currentLang.code.toUpperCase()}</span>
               <ChevronDown className={`w-3 h-3 transition-transform ${langDropdown ? "rotate-180" : ""}`} />
             </button>
 
@@ -141,18 +166,12 @@ export default function Navbar() {
             </AnimatePresence>
           </div>
 
-          <a
-            href="/cv.pdf"
-            className="hidden sm:flex items-center gap-2 px-5 xl:px-6 py-2.5 text-[13px] font-black text-white bg-brand-orange rounded-xl hover:bg-brand-primary transition-all shadow-lg shadow-brand-orange/20 whitespace-nowrap shrink-0 uppercase tracking-tight"
-          >
-            <Download className="w-3.5 h-3.5" />
-            {t("nav.cv")}
-          </a>
           <button
-            className="lg:hidden p-2 text-brand-text-muted hover:text-brand-primary transition-colors"
+            className="lg:hidden flex h-10 w-10 items-center justify-center rounded-xl text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-alt transition-colors"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
@@ -177,13 +196,34 @@ export default function Navbar() {
                   {link.name}
                 </a>
               ))}
-              <a
-                href="/cv.pdf"
-                className="mt-4 flex items-center justify-center gap-2 px-6 py-4 text-sm font-bold text-white bg-brand-orange rounded-xl hover:bg-brand-primary transition-all shadow-lg shadow-brand-orange/10"
-              >
-                <Download className="w-4 h-4" />
-                {t("nav.cv")}
-              </a>
+
+              <div className={`mt-4 pt-5 border-t border-brand-text/10 flex items-center gap-3 ${isAr ? 'flex-row-reverse' : ''}`}>
+                <a
+                  href={content.contact.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-bg-alt border border-brand-text/10 text-brand-text-muted hover:text-brand-primary transition-colors"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+                <a
+                  href={content.contact.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-bg-alt border border-brand-text/10 text-brand-text-muted hover:text-brand-primary transition-colors"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+                <a
+                  href="/cv"
+                  onClick={() => setIsOpen(false)}
+                  className="ml-auto px-5 py-3 rounded-xl bg-brand-primary text-white text-[11px] font-black uppercase tracking-widest hover:bg-brand-secondary transition-colors"
+                >
+                  {t("nav.cv")}
+                </a>
+              </div>
             </div>
           </motion.div>
         )}

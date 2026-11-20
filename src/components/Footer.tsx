@@ -28,25 +28,33 @@ export default function Footer() {
             © {currentYear} Abderrahim Talibi. {t('footer.rights')}
           </p>
 
-          <div className={`flex items-center gap-8 ${isAr ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex flex-wrap items-center justify-center gap-6 md:gap-8 ${isAr ? 'flex-row-reverse' : ''}`}>
             <a
-              href={content.contact.github || "https://github.com/atalibi"}
-              className="text-[10px] font-black text-brand-text-muted hover:text-brand-primary uppercase tracking-[0.4em] transition-all"
+              href={`mailto:${content.contact.email}`}
+              className="text-[10px] font-black text-brand-text-muted hover:text-brand-primary uppercase tracking-[0.3em] transition-all"
             >
-              GitHub
+              Email
             </a>
-            <a
-              href="https://linkedin.com/in/abderrahim-talibi"
-              className="text-[10px] font-black text-brand-text-muted hover:text-brand-primary uppercase tracking-[0.4em] transition-all"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="/admin/login"
-              className="text-[8px] font-black text-brand-text-muted hover:text-brand-primary uppercase tracking-[0.4em] transition-all opacity-10 hover:opacity-100"
-            >
-              Admin
-            </a>
+            {content.contact.github && (
+              <a
+                href={content.contact.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-black text-brand-text-muted hover:text-brand-primary uppercase tracking-[0.3em] transition-all"
+              >
+                GitHub
+              </a>
+            )}
+            {content.contact.linkedin && (
+              <a
+                href={content.contact.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-black text-brand-text-muted hover:text-brand-primary uppercase tracking-[0.3em] transition-all"
+              >
+                LinkedIn
+              </a>
+            )}
           </div>
         </div>
       </div>

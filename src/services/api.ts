@@ -71,6 +71,12 @@ export const api = {
   sendMessage: (payload: { name: string; email: string; subject: string; message: string }) =>
     request<{ ok: boolean }>("/api/messages", { method: "POST", body: JSON.stringify(payload) }),
 
+  sendContactEmail: (payload: { name: string; email: string; subject: string; message: string }) =>
+    request<{ success: boolean; id?: string; message: string }>("/api/contact-email", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+
   getAdminContent: () => request<{ content: PortfolioContent }>("/api/admin/content"),
   getStats: () => request<AdminStats>("/api/admin/stats"),
   getMessages: () => request<{ items: Message[] }>("/api/admin/messages"),
@@ -176,14 +182,21 @@ export const api = {
   },
 
   uploadFile: async (file: File): Promise<string> => {
-    const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
-    if (!allowed.includes(file.type) && !file.name.toLowerCase().endsWith(".pdf")) {
-      throw new ApiError("Format non supporté. Seuls les fichiers PDF et images sont acceptés.", 400);
+    const name = file.name.toLowerCase();
+    const spreadsheetMimes = [
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+    const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp", ...spreadsheetMimes];
+    const isSpreadsheetExt = name.endsWith(".xls") || name.endsWith(".xlsx");
+    if (!allowed.includes(file.type) && !name.endsWith(".pdf") && !isSpreadsheetExt) {
+      throw new ApiError("Format non supporté. Formats acceptés : PDF, Excel (.xls, .xlsx) et images.", 400);
     }
     if (file.size > 15 * 1024 * 1024) {
       throw new ApiError("Le fichier ne doit pas dépasser 15 Mo.", 400);
     }
-    const contentType = file.type || "application/pdf";
+    const contentType = file.type
+      || (name.endsWith(".xlsx") ? spreadsheetMimes[1] : name.endsWith(".xls") ? spreadsheetMimes[0] : "application/pdf");
     const data = await request<{ url: string }>("/api/admin/uploads", {
       method: "POST",
       headers: { "Content-Type": contentType, "X-Admin-Request": "1" },

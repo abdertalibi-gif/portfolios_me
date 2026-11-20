@@ -59,7 +59,7 @@ export default function About() {
                       <Brain className="w-6 h-6 text-brand-primary group-hover:text-white" />
                     </div>
                     <p className="text-sm font-black text-brand-text uppercase tracking-widest">{t("about.specialization")}</p>
-                    <p className="text-[10px] text-brand-text-muted font-bold uppercase mt-1 tracking-widest opacity-60">Licence d'Excellence</p>
+                    <p className="text-[10px] text-brand-text-muted font-bold uppercase mt-1 tracking-widest opacity-60">{t("about.degree")}</p>
                   </div>
                   <div className="p-6 rounded-3xl bg-brand-bg border border-brand-text/10 card-shadow transition-all hover:card-shadow-hover hover:border-brand-orange/30 group">
                     <div className="w-12 h-12 rounded-2xl bg-brand-orange/10 flex items-center justify-center mb-4 group-hover:bg-brand-orange transition-colors">

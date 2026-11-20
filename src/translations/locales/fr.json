@@ -5,68 +5,71 @@
     "skills": "Compétences",
     "projects": "Projets",
     "education": "Éducation",
-    "experience": "Expérience",
-    "certifications": "Certifications",
+    "experience": "Académique",
+    "certifications": "Réalisations",
     "contact": "Contact",
-    "cv": "Télécharger CV"
+    "cv": "Voir mon CV"
   },
   "hero": {
-
+    "badge": "Master SDIA · Université Moulay Ismaïl",
     "greeting": "Bonjour, je suis",
     "name": "Abderrahim Talibi",
     "title": "Software Engineer | AI & Backend Developer",
-    "subtitle": "Construction d'applications intelligentes, de systèmes backend évolutifs et de solutions IA innovantes avec un accent sur la science des données.",
+    "subtitle": "Développement d'applications web, d'API Python et de systèmes intelligents — avec une exigence : du code testé, documenté et déployable.",
     "cta_work": "Voir mes projets",
-    "cta_cv": "Télécharger CV",
-    "years_exp": "Ans d'expérience",
+    "cta_cv": "Voir mon CV",
+    "years_exp": "Années d'expérience",
     "ai_expert": "Expert en IA"
   },
   "about": {
     "title": "À propos",
     "subtitle": "L'innovation par l'IA et les données",
-    "description": "Je suis un ingénieur logiciel spécialisé en Science des Données et Intelligence Artificielle de l'Université Moulay Ismail. Ma passion réside dans la construction de systèmes évolutifs et d'applications intelligentes qui résolvent des problèmes complexes du monde réel. Je combine l'excellence académique avec l'expertise technique pour fournir des solutions d'ingénierie à fort impact.",
-    "academic": "Parcours Académique",
-    "specialization": "Science des Données & IA",
-    "goals": "Objectifs Professionnels",
-    "strengths": "Points Forts",
-    "backend_dev": "Dév Backend",
-    "scalable_systems": "Systèmes Évolutifs"
+    "description": "Étudiant en Master Sciences des Données et Intelligence Artificielle (SDIA) à l'Université Moulay Ismaïl, titulaire d'une Licence d'Excellence dans la même filière. Je conçois des applications web et des API en Python (Django, FastAPI), avec un intérêt marqué pour l'ingénierie backend, les systèmes intelligents et les données. J'apprends en construisant : chaque projet académique ou personnel est l'occasion de livrer du code testé, documenté et déployable.",
+    "academic": "Parcours académique",
+    "specialization": "Science des données & IA",
+    "goals": "Objectifs professionnels",
+    "strengths": "Points forts",
+    "backend_dev": "Développement backend",
+    "scalable_systems": "Systèmes évolutifs",
+    "degree": "Master SDIA · 2026–2028"
   },
   "skills": {
-    "title": "Compétences Techniques",
-    "subtitle": "Expertise Technique Spécialisée",
+    "title": "Compétences techniques",
+    "subtitle": "Expertise technique spécialisée",
     "categories": {
-      "backend": "Développement Backend",
-      "frontend": "Développement Frontend",
-      "database": "Gestion de Bases de Données",
-      "devops": "DevOps & Cloud",
+      "backend": "Développement backend",
+      "frontend": "Frontend & mobile",
+      "database": "Bases de données",
+      "devops": "DevOps & outils",
       "ai": "IA & Machine Learning",
-      "datascience": "Science des Données"
+      "datascience": "Science des données"
     }
   },
   "projects": {
-    "title": "Projets Phares",
-    "subtitle": "Innovations Logicielles Sélectionnées",
-    "description": "Ingénierie de solutions évolutives et de systèmes d'IA intelligents conçus pour la résolution de problèmes complexes.",
-    "view_source": "Code Source",
-    "live_demo": "Aperçu en direct"
+    "title": "Projets",
+    "subtitle": "Innovations logicielles sélectionnées",
+    "description": "Projets académiques et personnels : de la conception à la mise en œuvre, avec un code documenté et des choix techniques assumés.",
+    "view_source": "Code source",
+    "live_demo": "Démo en ligne",
+    "repository_private": "Dépôt privé"
   },
   "education": {
     "title": "Éducation",
-    "subtitle": "Parcours Académique"
+    "subtitle": "Parcours académique"
   },
   "experience": {
-    "title": "Expérience",
-    "subtitle": "Jalons Professionnels"
+    "title": "Projets académiques",
+    "subtitle": "et développement personnel",
+    "description": "Réalisés dans le cadre de ma formation ou sur mon temps personnel, ces projets couvrent la conception, le développement, les tests et la documentation."
   },
   "certifications": {
-    "title": "Certifications & Réalisations",
-    "subtitle": "Excellence Reconnue",
-    "view": "Voir le certificat"
+    "title": "Réalisations",
+    "subtitle": "académiques",
+    "view": "Voir le projet"
   },
   "contact": {
     "title": "Contact",
-    "subtitle": "Construisons Quelque Chose Ensemble",
+    "subtitle": "Construisons quelque chose ensemble",
     "email_me": "M'envoyer un email",
     "form": {
       "name": "Nom",
@@ -75,7 +78,9 @@
       "message": "Message",
       "submit": "Envoyer le message",
       "sending": "Envoi...",
-      "success": "Message envoyé avec succès !"
+      "success": "Message envoyé !",
+      "error": "Impossible d'envoyer le message. Réessayez plus tard.",
+      "privacy": "Vos informations servent uniquement à répondre à votre message."
     }
   },
   "footer": {

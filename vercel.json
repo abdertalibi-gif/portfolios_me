@@ -1,0 +1,25 @@
+{
+  "functions": {
+    "server/index.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "routes": [
+    {
+      "source": "/api/contact-email",
+      "dest": "server/index.ts"
+    },
+    {
+      "source": "/api/messages",
+      "dest": "server/index.ts"
+    },
+    {
+      "source": "/api/(.*)",
+      "dest": "server/index.ts"
+    },
+    {
+      "source": "/(.*)",
+      "dest": "server/index.ts"
+    }
+  ]
+}

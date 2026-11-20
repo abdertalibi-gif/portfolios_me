@@ -1,0 +1,212 @@
+[
+ {
+  "n": 1,
+  "title": "Page de couverture",
+  "part": "Ouverture",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nBonjour à toutes et à tous. Merci de votre présence. Le sujet que je vais présenter relie deux expressions que nous entendons très souvent : l’économie du numérique et l’économie de l’attention. Mon objectif n’est pas de les traiter comme des slogans, mais de montrer, avec des mécanismes précis, comment des données personnelles et du temps d’attention deviennent des ressources économiques mesurables. Nous verrons que ce basculement ne relève pas de la magie : il repose sur des architectures informatiques, des modèles statistiques et des choix de conception d’interface. Le fil rouge sera donc technique autant qu’économique. J’ai prévu trois temps : les fondements, les mécanismes, puis les enjeux éthiques et juridiques.\n\nTransition : commençons par une situation que nous vivons tous les jours."
+ },
+ {
+  "n": 2,
+  "title": "Mise en situation",
+  "part": "Partie I · Fondements",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nPrenons une journée ordinaire. À 6 h 40, le téléphone sonne : l’heure du réveil est une donnée. À 7 h 15, une application de cartes sait d’où je pars et où je vais. À 9 h 05, une messagerie connaît mon réseau social réel. À 12 h 30, une requête de recherche trahit une intention : acheter, se soigner, se former. À 18 h 10, la plateforme de vidéos me propose la suite « logique ». À 22 h 45, une recommandation précède mon envie d’achat. Six gestes, six traces. Aucun de ces services ne m’a facturé un centime au moment de l’usage. D’où vient alors la valeur ? C’est la question que nous allons démonter tout au long de l’exposé.\n\nTransition : précisons la problématique et le chemin que nous allons suivre."
+ },
+ {
+  "n": 3,
+  "title": "Problématique et objectifs",
+  "part": "Partie I · Fondements",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 50.\n\nLa problématique tient en une phrase, mais elle contient trois mécanismes distincts. D’abord une matière première : les données, qu’elles soient déclarées, comportementales ou transactionnelles. Ensuite un moteur : les algorithmes, en particulier d’apprentissage automatique, qui transforment ces traces en prédictions. Enfin un marché : des annonceurs qui paient pour accéder à une probabilité d’attention. Les quatre objectifs découlent de cette chaîne : comprendre, analyser, expliquer, évaluer. Le parcours suit exactement cet ordre : nous partirons des fondements économiques, puis des plateformes, puis de l’infrastructure technique, avant d’aborder l’économie de l’attention, les compétences et le cadre juridique.\n\nTransition : commençons par définir ce qu’est réellement l’économie numérique."
+ },
+ {
+  "n": 4,
+  "title": "Définition de l’économie numérique",
+  "part": "Partie I · Fondements",
+  "transition": "Morphose (Morph)",
+  "notes": "TEMPS : 1 min.\n\nIl faut insister sur un point : le numérique ne se contente pas d’accélérer l’économie existante. Il change la nature des biens. Un logiciel, une vidéo, un modèle de données sont non rivaux : leur consommation par un utilisateur ne réduit pas la quantité disponible pour un autre. Le coût marginal de reproduction tend vers zéro, alors que le coût initial de conception est élevé. Cette asymétrie explique deux choses : la tentation de la gratuité pour atteindre une masse critique, et la concentration du marché au profit de ceux qui atteignent cette masse les premiers. Les quatre briques — données, logiciels, réseaux, plateformes — forment la chaîne complète : capter, traiter, distribuer, organiser. C’est la combinaison de ces quatre éléments, et non un seul d’entre eux, qui produit le modèle économique.\n\nTransition : cette logique s’est installée par étapes, avec l’évolution du web."
+ },
+ {
+  "n": 5,
+  "title": "Évolution d’Internet",
+  "part": "Partie I · Fondements",
+  "transition": "Morphose (Morph)",
+  "notes": "TEMPS : 0 min 55.\n\nCette chronologie est utile pour éviter une erreur fréquente : croire que la captation de données est consubstantielle à Internet. Le web des débuts était massivement documentaire : on consultait des pages, on ne produisait presque rien. Le web participatif a changé le régime : l’utilisateur est devenu producteur de contenu, donc de données. Enfin, le « web 3.0 » recouvre des projets très différents — web sémantique, registres distribués, agents logiciels — et il n’existe pas de définition unique et stabilisée. Je le présente donc comme un ensemble de visions concurrentes, pas comme un état de l’art établi. Ce qui compte pour notre sujet, c’est la constante : à chaque étape, le pouvoir économique glisse vers celui qui opère l’infrastructure de collecte et de calcul.\n\nTransition : cette infrastructure, c’est précisément la plateforme."
+ },
+ {
+  "n": 6,
+  "title": "Qu’est-ce qu’une plateforme numérique ?",
+  "part": "Partie II · Plateformes & modèles",
+  "transition": "Morphose (Morph)",
+  "notes": "TEMPS : 1 min.\n\nUne plateforme se définit moins par sa technologie que par sa fonction économique : elle met en relation au moins deux catégories d’acteurs qui ne pourraient pas se rencontrer facilement sans elle. Elle fournit trois services : un langage commun, un système de confiance et un mécanisme de classement. C’est ce troisième point qui est décisif. Classer, c’est distribuer de la visibilité, donc de la valeur. Une plateforme ne se contente pas d’héberger des contenus : elle décide qui voit quoi. Notez que les quatre côtés ne sont pas symétriques. Les utilisateurs apportent l’attention et les contenus ; les annonceurs apportent la trésorerie ; les créateurs apportent la matière éditoriale ; les entreprises apportent des biens et des services. La plateforme se place au centre et facture l’accès à ce déséquilibre.\n\nTransition : ce déséquilibre a un nom en économie : le marché biface."
+ },
+ {
+  "n": 7,
+  "title": "Les marchés multifaces",
+  "part": "Partie II · Plateformes & modèles",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nL’apport de Rochet et Tirole, en 2003, est d’avoir formalisé une intuition simple : dans un marché biface, le prix optimal n’est pas le même des deux côtés. On peut même descendre à zéro, voire subventionner un côté, si cela augmente suffisamment la valeur pour l’autre. C’est exactement le modèle des services gratuits financés par la publicité. Attention à une nuance importante : « gratuit » ne signifie pas « sans coût ». Le coût est payé en attention et en données, et il est ensuite monétisé. La flèche en pointillés que vous voyez à gauche représente ce transfert non monétaire. Les externalités croisées expliquent aussi la violence de la concurrence : gagner quelques points de part de marché peut faire basculer tout l’équilibre, ce qui pousse à des stratégies d’enfermement.\n\nTransition : cet effet de bascule porte un nom : les effets de réseau."
+ },
+ {
+  "n": 8,
+  "title": "Les effets de réseau",
+  "part": "Partie II · Plateformes & modèles",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nLes effets de réseau ont été formalisés dès 1985 par Katz et Shapiro. L’idée est simple mais lourde de conséquences : la valeur d’un service dépend du nombre d’autres utilisateurs. Le schéma montre huit nœuds : le nombre de liaisons possibles n’est pas huit, mais vingt-huit, selon la formule n fois n moins un sur deux. La croissance de la valeur est donc quadratique, alors que les coûts d’infrastructure sont largement fixes. Trois mécanismes en découlent : l’effet direct, l’effet indirect entre les côtés du marché, et les coûts de sortie. Ces derniers sont souvent sous-estimés : changer de messagerie, ce n’est pas changer d’application, c’est perdre un réseau. Cette configuration explique la concentration observée, et justifie que le droit de la concurrence s’intéresse aux plateformes.\n\nTransition : voyons comment les grands acteurs monétisent ces positions."
+ },
+ {
+  "n": 9,
+  "title": "Les modèles économiques des grandes plateformes",
+  "part": "Partie II · Plateformes & modèles",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nJe ne donne volontairement aucun chiffre de chiffre d’affaires : ces données changent chaque trimestre et dépendent des normes comptables. Ce qui est stable, c’est la structure. Google vend l’accès à une intention, captée au moment de la recherche. Meta vend l’accès à un profil social et à des centres d’intérêt déclarés ou inférés. Amazon combine trois activités : le commerce, la place de marché et le cloud — c’est le cloud qui fournit la marge la plus prévisible. Apple monétise le matériel puis verrouille l’écosystème par les services. Microsoft vend des licences puis migre vers l’abonnement et le cloud. Cinq stratégies, une constante : tenir un point de passage et instrumenter ce qui s’y échange.\n\nTransition : alors, pourquoi le service affiché est-il gratuit ?"
+ },
+ {
+  "n": 10,
+  "title": "La gratuité comme modèle économique",
+  "part": "Partie II · Plateformes & modèles",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nDécomposons la chaîne. Première étape : le service doit être réellement utile, sinon il n’y a pas d’usage. Deuxième étape : l’usage laisse une trace, même sans déclaration explicite — heure de connexion, durée, clics, pauses. Troisième étape : un modèle statistique convertit ces traces en probabilités, par exemple la probabilité qu’un clic ait lieu dans les deux prochaines minutes. Quatrième étape : cette probabilité a un prix sur un marché publicitaire. Les cinq modèles que je présente se combinent souvent : Amazon pratique la commission et le cloud, Apple l’abonnement et le matériel, Google la publicité et le cloud. La phrase à retenir est la suivante : la gratuité est un choix de tarification, pas une absence de modèle économique.\n\nTransition : entrons dans la matière première de ce modèle, la donnée."
+ },
+ {
+  "n": 11,
+  "title": "La donnée comme ressource économique",
+  "part": "Partie III · Données & intelligence artificielle",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min 05.\n\nUne donnée brute, seule, ne vaut presque rien. Ce qui a de la valeur, c’est la capacité à la comparer, à l’agréger et à en tirer une prédiction. Je distingue quatre familles. Les données déclarées sont celles que je fournis volontairement. Les données comportementales sont observées, souvent à mon insu. Les données transactionnelles engagent de l’argent, donc elles sont particulièrement fiables. Les données contextuelles décrivent l’environnement de l’usage. La colonne de droite montre la transformation : une trace devient un signal, le signal devient un segment, le segment devient une prédiction. C’est cette dernière étape qui est vendue. Un point juridique important : pseudonymiser n’est pas anonymiser. Le croisement de jeux de données permet souvent de ré-identifier les personnes, comme l’ont montré les travaux sur la protection de la vie privée.\n\nTransition : à quelle échelle cette collecte se fait-elle ?"
+ },
+ {
+  "n": 12,
+  "title": "Big Data et collecte des données",
+  "part": "Partie III · Données & intelligence artificielle",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nLe terme « big data » est souvent réduit au volume. C’est une erreur technique : ce qui coûte cher, c’est la vitesse et la variété. Un flux d’événements en temps réel impose des architectures de files d’attente et de traitement en continu ; des formats hétérogènes imposent un travail de normalisation avant tout calcul. J’ajoute deux propriétés souvent oubliées : la véracité, car les données sont bruitées, et la valeur, car un entrepôt sans usage est un coût. Le schéma du centre est volontairement générique : sources, entrepôt, usages. Dans une entreprise réelle, chaque flèche correspond à des métiers différents et à des responsabilités juridiques distinctes, notamment sur la durée de conservation.\n\nTransition : comment le suivi se fait-il concrètement dans un navigateur ?"
+ },
+ {
+  "n": 13,
+  "title": "Le suivi des comportements",
+  "part": "Partie III · Données & intelligence artificielle",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nLe suivi repose sur une brique très simple : un identifiant. Un cookie, un identifiant publicitaire mobile ou une empreinte technique permettent de reconnaître le même appareil à des moments différents. C’est ce qui transforme des événements isolés en trajectoire. Les cinq étapes du schéma correspondent à des métiers distincts : l’éditeur du site, la régie, l’annonceur, parfois un courtier en données. La petite pastille blanche qui traverse l’écran illustre le parcours d’un signal. Insistez sur la dernière étape : ce qui est vendu, ce n’est pas la donnée brute, mais la possibilité de mesurer l’effet d’une campagne. Les garde-fous juridiques ne sont pas décoratifs : ils conditionnent la licéité de tout l’édifice.\n\nTransition : passons de la collecte à l’architecture qui la rend possible."
+ },
+ {
+  "n": 14,
+  "title": "Architecture informatique d’une plateforme",
+  "part": "Partie III · Données & intelligence artificielle",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nCe schéma est volontairement simplifié, mais il respecte l’ordre réel des couches. En bas, l’infrastructure : sans élasticité, un pic de trafic devient une panne. Au-dessus, les modèles : ils ne produisent rien sans données propres. Puis l’entrepôt et les pipelines, qui font le travail ingrat de normalisation. La collecte vient ensuite, conceptuellement en amont mais techniquement en parallèle. Les bases de données portent l’état durable. L’API expose les règles métier et contrôle les accès. L’interface, enfin, capture l’intention. Le point à retenir pour un étudiant en data science : la qualité d’un modèle dépend d’abord de la qualité des journaux qui l’alimentent. Une architecture mal instrumentée rend tout modèle fragile, quelle que soit la sophistication de l’algorithme.\n\nTransition : quel rôle joue précisément l’intelligence artificielle dans cette chaîne ?"
+ },
+ {
+  "n": 15,
+  "title": "Le rôle de l’intelligence artificielle",
+  "part": "Partie III · Données & intelligence artificielle",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nLe pipeline présenté est le schéma canonique de l’apprentissage supervisé. Trois points méritent l’attention d’un public de master. Premier point : ce n’est pas l’algorithme qui crée la valeur, c’est la variable cible. Si j’optimise le nombre de clics, j’obtiens un système qui maximise les clics, pas la satisfaction. Deuxième point : la corrélation n’est pas la causalité. Un modèle peut être excellent en prédiction et totalement faux en interprétation. Troisième point : la dérive des données. Les comportements évoluent, les interfaces changent, et un modèle entraîné sur des données anciennes perd sa pertinence. D’où l’importance de l’évaluation continue et des tests en production.\n\nTransition : voyons comment ces modèles produisent concrètement des recommandations."
+ },
+ {
+  "n": 16,
+  "title": "Les algorithmes de recommandation",
+  "part": "Partie III · Données & intelligence artificielle",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nUn système de recommandation répond à un problème de classement sous contrainte : des millions de candidats, un écran, quelques positions. Le filtrage collaboratif exploite la matrice des interactions ; il est puissant mais souffre du démarrage à froid, quand un nouvel utilisateur ou un nouvel objet n’a aucune interaction. L’approche par contenu décrit les objets et compare avec le profil ; elle fonctionne dès le premier item mais favorise la répétition. En production, on combine presque toujours plusieurs signaux, et on ajoute des règles : diversité, fraîcheur, sécurité, obligations légales. Le classement final n’est donc pas un simple tri mathématique : c’est un arbitrage produit. Je précise enfin que les systèmes réels sont propriétaires : nous décrivons des familles de méthodes, pas la recette interne d’une entreprise.\n\nTransition : comment sait-on qu’une variante est meilleure qu’une autre ?"
+ },
+ {
+  "n": 17,
+  "title": "A/B testing et optimisation",
+  "part": "Partie III · Données & intelligence artificielle",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nLe test A/B est la méthode expérimentale de l’industrie numérique. Son principe est simple : deux variantes, une seule différence, une métrique décidée avant l’expérience. Sa mise en œuvre est plus délicate. D’abord, il faut un échantillon suffisant et une répartition aléatoire correcte. Ensuite, il faut choisir la métrique : le taux de clic est facile à mesurer, mais il peut augmenter au détriment de la satisfaction. Enfin, il faut se méfier des tests multiples : si l’on teste vingt variantes, on finira par trouver un écart significatif par hasard. Le graphique présenté est explicitement fictif : je ne prétends pas citer un résultat réel. La démarche, elle, est rigoureuse et reproductible.\n\nTransition : ces techniques optimisent l’engagement. Or l’engagement est une ressource finie. C’est ici qu’intervient l’économie de l’attention."
+ },
+ {
+  "n": 18,
+  "title": "Le capitalisme de surveillance",
+  "part": "Partie IV · Attention & surveillance",
+  "transition": "Morphose (Morph)",
+  "notes": "TEMPS : 1 min.\n\nLe concept de capitalisme de surveillance a été développé par Shoshana Zuboff. Il ne désigne pas la publicité en général, mais une logique précise : l’expérience humaine devient une matière première, transformée en données comportementales, puis en produits prédictifs. Le cycle en quatre temps que je montre insiste sur un point souvent négligé : la réinjection. Les prédictions ne restent pas dans un entrepôt, elles reviennent dans l’interface et modifient le comportement. C’est ce bouclage qui distingue ce modèle d’une simple étude de marché. Deux précautions : d’une part, toutes les plateformes ne pratiquent pas ce modèle avec la même intensité ; d’autre part, il s’agit d’une thèse critique, pas d’une preuve de complot. Les faits doivent être vérifiés entreprise par entreprise.\n\nTransition : dans ce circuit, quelle est exactement la place de l’utilisateur ?"
+ },
+ {
+  "n": 19,
+  "title": "L’utilisateur est-il le produit ?",
+  "part": "Partie IV · Attention & surveillance",
+  "transition": "Morphose (Morph)",
+  "notes": "TEMPS : 0 min 55.\n\nLa formule est célèbre, et elle a le mérite d’alerter. Mais elle est analytiquement imprécise. Regardons les rôles. L’utilisateur est un usager : il reçoit un service. Il est aussi une source de données : son comportement est observé. Il constitue une audience : son attention est revendue. Il peut enfin être un client, lorsqu’il paie un abonnement ou un achat. Ces quatre rôles ne sont pas simultanément actifs chez tout le monde. Ce que la plateforme vend à l’annonceur, ce n’est pas une personne, c’est une probabilité : la probabilité qu’un profil donné réagisse à un message donné dans un contexte donné. Cette distinction n’est pas rhétorique : elle change la nature du débat éthique et juridique.\n\nTransition : venons-en au cœur du sujet, l’attention elle-même."
+ },
+ {
+  "n": 20,
+  "title": "L’économie de l’attention",
+  "part": "Partie IV · Attention & surveillance",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nL’économie de l’attention ne date pas d’Internet. Herbert Simon en donnait la formulation dès 1971 : l’abondance d’information crée une pauvreté de l’attention. Ce qui change aujourd’hui, c’est l’échelle et la mesure. Le budget de temps est fixe : vingt-quatre heures, dont une grande partie est déjà occupée. Le bandeau du haut est un exemple illustratif, pas une statistique. Les quatre mécanismes présentés ne sont pas des malveillances : ce sont des solutions d’ingénierie à un problème de rétention. Chaque notification, chaque défilement infini, chaque lecture automatique réduit le coût de la décision de rester. Le résultat est que l’engagement devient une métrique financière, et que la conception d’interface devient un levier de revenus.\n\nTransition : lorsque ces leviers deviennent trompeurs, on parle de dark patterns."
+ },
+ {
+  "n": 21,
+  "title": "Dark patterns et conception persuasive",
+  "part": "Partie IV · Attention & surveillance",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nUn dark pattern n’est pas une maladresse : c’est une conception qui tire parti des biais cognitifs pour obtenir un comportement favorable à l’éditeur. Le comparatif est volontairement schématique. À gauche, le bouton d’acceptation est large et coloré, tandis que le refus est regroupé dans une ligne de texte gris. À droite, les deux options ont le même poids visuel, et les finalités sont détaillées. La différence n’est pas esthétique : elle est juridique. Un consentement obtenu par asymétrie n’est pas « libre et éclairé » au sens du RGPD. Les quatre familles présentées sont documentées par le catalogue de Harry Brignull et par les travaux des autorités de protection des données.\n\nTransition : l’attention ne se monétise pas seulement par la publicité. Elle se monétise aussi par le travail."
+ },
+ {
+  "n": 22,
+  "title": "Micro-travail et économie des plateformes",
+  "part": "Partie IV · Attention & surveillance",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nL’intelligence artificielle est souvent présentée comme un remplacement du travail humain. Dans les faits, elle en crée aussi, sous une forme particulière : des micro-tâches. Étiqueter une image, transcrire un audio, comparer deux réponses, juger la toxicité d’un texte : ces opérations sont difficiles à automatiser complètement et faciles à fragmenter. La plateforme joue ici son rôle habituel : elle découpe, distribue, contrôle la qualité et paie à la tâche. Le lien avec l’IA générative est direct : une partie de l’alignement repose sur des évaluations humaines. Deux précautions méthodologiques : les conditions de travail varient considérablement selon les pays et les statuts, et un indicateur de qualité n’est pas un indicateur de bien-être.\n\nTransition : élargissons maintenant aux conséquences individuelles et collectives."
+ },
+ {
+  "n": 23,
+  "title": "Conséquences individuelles et collectives",
+  "part": "Partie IV · Attention & surveillance",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nJe présente cinq effets, en assumant leur statut inégal. Le premier concerne l’attention : les interruptions fréquentes ont un coût cognitif mesurable, même si l’ampleur varie selon les individus. Le deuxième concerne la vie privée : la pseudonymisation ne protège pas toujours de la ré-identification. Le troisième concerne l’autonomie : un choix par défaut n’est pas un choix neutre. Le quatrième concerne l’information : les dispositifs d’amplification privilégient souvent l’émotion. Le cinquième concerne le travail : la surveillance algorithmique des performances est un phénomène documenté. La barre du bas est essentielle : la recherche établit des corrélations solides, mais la causalité individuelle est beaucoup plus difficile à démontrer. Il faut le dire clairement.\n\nTransition : que peut-on faire, à l’échelle individuelle ?"
+ },
+ {
+  "n": 24,
+  "title": "Les compétences numériques indispensables",
+  "part": "Partie V · Compétences numériques",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nLa culture numérique n’est pas une liste d’outils : c’est une capacité d’interprétation. Programmer permet d’automatiser et de vérifier. La data literacy permet de lire une distribution, de repérer une moyenne trompeuse, de comprendre ce qu’un échantillon représente. La cybersécurité permet de penser en termes de menaces. La protection des données est à la fois juridique et pratique : connaître ses droits ne sert à rien si l’on ne sait pas les exercer. L’analyse critique est la compétence la plus difficile : distinguer corrélation et causalité, résister à une visualisation persuasive. Enfin, la collaboration : un modèle n’a d’effet que s’il est compris par ceux qui décident. Le point aveugle fréquent, c’est de former des techniciens excellents et socialement illettrés.\n\nTransition : comment développer cette autonomie concrètement ?"
+ },
+ {
+  "n": 25,
+  "title": "Développer son autonomie numérique",
+  "part": "Partie V · Compétences numériques",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 50.\n\nCe parcours en quatre étapes est volontairement modeste. Apprendre : les bases suffisent pour commencer, à condition qu’elles soient solides — Python, statistiques descriptives, SQL, ligne de commande. Pratiquer : reproduire un projet existant, le casser, le réparer. C’est là que se construit la compétence réelle. Publier : un dépôt Git avec un notebook lisible vaut mieux qu’un certificat. Transmettre : savoir expliquer à un non-spécialiste et écrire ses limites. La boîte à outils est minimale et majoritairement libre. J’ajoute une règle sur l’IA générative : elle accélère la production mais ne transfère jamais la responsabilité de la vérification. Un code généré doit être exécuté, testé et compris.\n\nTransition : cette autonomie suppose aussi de protéger son attention."
+ },
+ {
+  "n": 26,
+  "title": "Bien-être numérique et gestion de l’attention",
+  "part": "Partie V · Compétences numériques",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nLe message n’est pas « quittez les plateformes ». Il est : rendez explicites des choix qui, par défaut, ne le sont pas. À gauche, cinq configurations courantes. À droite, cinq alternatives qui ne demandent aucun outil spécialisé. Le levier le plus efficace est le premier : les notifications. Chaque interruption a un coût de reprise de la tâche, souvent sous-estimé. Le deuxième est la séparation des contextes : un appareil ou un profil dédié au travail réduit les bascules. Le troisième est la décision anticipée : choisir ses sources avant d’ouvrir le fil, plutôt que de laisser l’algorithme choisir. Ces mesures ne remplacent pas une régulation collective, mais elles redonnent une marge de manœuvre.\n\nTransition : appliquons tout cela à un cas concret."
+ },
+ {
+  "n": 27,
+  "title": "Étude de cas : TikTok",
+  "part": "Partie VI · Cas pratique & responsabilité",
+  "transition": "Fondu",
+  "notes": "TEMPS : 0 min 55.\n\nLe cas TikTok est intéressant parce qu’il concentre tous les mécanismes vus précédemment. Le parcours utilisateur est simple : on ouvre, on fait défiler, un signal est capté, une recommandation est produite, la rétention est mesurée. Trois colonnes d’analyse. Le modèle économique repose sur la publicité intégrée au fil, la monétisation des créateurs et le commerce. Les données mobilisées sont les interactions — like, partage, mais surtout le temps de visionnage et le revisionnage — et le contexte d’usage. Le rôle de la recommandation est de classer des candidats et de tester des audiences. Soyons rigoureux : les faits documentés sont le modèle publicitaire et l’obligation de transparence ; le détail des pondérations n’est pas public. Toute reconstitution précise serait spéculative.\n\nTransition : quel cadre juridique encadre ces pratiques ?"
+ },
+ {
+  "n": 28,
+  "title": "Cadre juridique et protection des données",
+  "part": "Partie VI · Cas pratique & responsabilité",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min.\n\nQuatre cadres, trois logiques. Au Maroc, la loi 09-08 pose les principes de protection des données personnelles et confie leur contrôle à la CNDP ; elle prévoit des obligations déclaratives et des droits pour les personnes. Dans l’Union européenne, le RGPD ajoute une logique de responsabilité : il faut pouvoir démontrer la conformité, pas seulement la déclarer. Le Digital Services Act déplace l’accent vers les plateformes : transparence des recommandations, modération, audit, accès des chercheurs. Enfin, des principes communs circulent : loyauté, sécurité, responsabilité, recours. Ce que ces textes ne résolvent pas : l’effectivité. Un droit théorique exercé par une minorité ne change pas un système. Et l’articulation entre protection des données, concurrence et régulation des contenus reste en construction. Vérifiez toujours l’état du droit à la date de votre exposé.\n\nTransition : concluons en revenant à la problématique."
+ },
+ {
+  "n": 29,
+  "title": "Conclusion générale",
+  "part": "Partie VI · Cas pratique & responsabilité",
+  "transition": "Morphose (Morph)",
+  "notes": "TEMPS : 1 min.\n\nRevenons à la question de départ. Trois idées la structurent. Première idée : les données sont une ressource stratégique, non par leur volume, mais parce qu’elles réduisent l’incertitude. Deuxième idée : l’attention a un prix, même s’il n’est pas affiché ; elle s’échange sur des marchés publicitaires et se mesure en probabilités d’action. Troisième idée : l’informatique et l’IA ne sont pas un décor, mais le moteur — architecture, journalisation, modèles, expérimentation. La réponse à la question finale n’est pas unique. Les compétences individuelles aident, mais ne suffisent pas face à des systèmes conçus pour capter. La conception respectueuse aide, mais doit être économiquement viable. La régulation aide, mais doit être appliquée. C’est leur combinaison qui produit un équilibre.\n\nTransition : je termine par les références et je suis à votre disposition pour les questions."
+ },
+ {
+  "n": 30,
+  "title": "Bibliographie et questions",
+  "part": "Clôture",
+  "transition": "Fondu",
+  "notes": "TEMPS : 1 min 05.\n\nJe termine par les références. Elles sont volontairement organisées en deux familles : à gauche, l’économie des plateformes et des données ; à droite, l’attention, les algorithmes et le travail. Les textes juridiques sont signalés séparément, car ils n’ont pas le même statut : ce sont des sources normatives, pas des analyses. Deux conseils de lecture. Si vous ne devez lire qu’un ouvrage, prenez celui de Zuboff pour la thèse critique, en gardant à l’esprit qu’il s’agit d’une interprétation. Si vous voulez les fondements économiques, commencez par Rochet et Tirole, puis Shapiro et Varian. Enfin, n’oubliez pas de vérifier les textes juridiques à leur source : ils évoluent.\n\nMerci pour votre attention. Je suis maintenant disponible pour vos questions, et en particulier pour celles qui porteraient sur la mise en œuvre technique ou sur les limites de ces analyses."
+ }
+]
