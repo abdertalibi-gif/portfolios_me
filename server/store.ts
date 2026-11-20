@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
-import type { AdminUser, Message, PortfolioContent } from "../shared/types";
-import { seedContent } from "../shared/seedContent";
-import { DATA_DIR, ROOT_DIR } from "./env";
+import type { AdminUser, Message, PortfolioContent } from "../shared/types.ts";
+import { seedContent } from "../shared/seedContent.ts";
+import { DATA_DIR, ROOT_DIR } from "./env.ts";
 
 interface AdminRecord {
   email: string;

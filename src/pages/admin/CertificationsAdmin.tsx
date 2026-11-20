@@ -131,11 +131,11 @@ export default function CertificationsAdmin() {
     >
       <PageHeader
         eyebrow="Réalisations"
-        title="Gestion des certifications"
-        description="Ajoutez et organisez vos certificats, diplômes professionnels et accréditations."
+        title="Gestion des réalisations"
+        description="Ajoutez et organisez vos distinctions académiques, jalons et projets mis en avant."
         actions={
           <Button icon={Plus} onClick={openCreate}>
-            Nouvelle certification
+            Nouvelle réalisation
           </Button>
         }
       />
@@ -149,9 +149,9 @@ export default function CertificationsAdmin() {
         <Panel>
           <EmptyState
             icon={Award}
-            title="Aucune certification enregistrée"
-            description="Ajoutez vos certificats pour prouver vos compétences certifiées sur le portfolio."
-            action={<Button icon={Plus} onClick={openCreate}>Ajouter une certification</Button>}
+            title="Aucune réalisation enregistrée"
+            description="Ajoutez vos distinctions académiques et jalons marquants pour enrichir le portfolio."
+            action={<Button icon={Plus} onClick={openCreate}>Ajouter une réalisation</Button>}
           />
         </Panel>
       ) : (
@@ -167,7 +167,7 @@ export default function CertificationsAdmin() {
                   <div className="flex flex-wrap items-center gap-1.5">
                     <Badge tone="green">
                       <Award className="h-3 w-3 mr-0.5 inline" />
-                      Certifié
+                      Réalisation
                     </Badge>
                     {item.date && <Badge tone="blue">{item.date}</Badge>}
                   </div>
@@ -223,7 +223,7 @@ export default function CertificationsAdmin() {
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-400 hover:text-cyan-300 transition"
                   >
-                    <span>Vérifier le certificat</span>
+                    <span>Voir le projet</span>
                     <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </div>
@@ -237,7 +237,7 @@ export default function CertificationsAdmin() {
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editing ? "Modifier la certification" : "Nouvelle certification"}
+        title={editing ? "Modifier la réalisation" : "Nouvelle réalisation"}
         wide
         footer={
           <>

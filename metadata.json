@@ -1,6 +1,6 @@
 {
   "name": "Abderrahim Talibi - Software Engineer & AI Developer",
-  "description": "Portfolio of Abderrahim Talibi, Software Engineer specializing in Python Backend, AI, and Cloud Solutions.",
+  "description": "Portfolio of Abderrahim Talibi, Software Engineer & AI Developer — Python backend (Django, FastAPI), data science and SDIA Master's student at Université Moulay Ismail.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

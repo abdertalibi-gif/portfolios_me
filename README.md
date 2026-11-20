@@ -1,24 +1,46 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Abderrahim Talibi — Portfolio
 
-# Run and deploy your AI Studio app
+Personal portfolio of **Abderrahim Talibi**, Software Engineer | AI & Backend Developer and Master's student in Data Science & Artificial Intelligence (SDIA) at Université Moulay Ismaïl (Meknès, Morocco).
 
-This contains everything you need to run your app locally.
+Live sections: Home · About · Skills · Projects · Education · Academic Projects · Achievements · Contact, in four languages (FR / EN / DE / AR).
 
-View your app in AI Studio: https://ai.studio/apps/ac3456f0-b937-472f-8a8b-65b8ab8dad71
+## Stack
 
-## Run Locally
+- **Frontend:** React 19, Vite 8, TypeScript, Tailwind CSS v4, Framer Motion, react-i18next, lucide-react
+- **Backend (dev):** Express 4 (embedded in Vite dev server), JSON file store (`data/db.json`), scrypt password hashing, rate limiting
+- **Content:** DB-backed portfolio content with seeded fallback (`shared/seedContent.ts`) so the site works even without the API
 
-**Prerequisites:**  Node.js
+## Run locally
 
+```bash
+npm install --legacy-peer-deps
+npm run dev          # Vite + Express API on http://localhost:3000
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
-"# portfolios_me" 
-"# my_portfolios-" 
-"# my_portfolios-" 
-"# my_portfolios-" 
+Admin dashboard: `http://localhost:3000/admin/login` (credentials from `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `.env`).
+
+## Build
+
+```bash
+npm run build        # outputs dist/
+npm run lint         # tsc --noEmit
+```
+
+## Deploy
+
+- Static hosting (Vercel/Netlify): `npm run build`, output `dist/`. The site renders from seeded content; the admin and contact email require the Express backend.
+- Full stack: run `npm start` (Express) behind a reverse proxy, or deploy the API separately.
+
+## Project layout
+
+```
+src/        React app (components, pages, context, i18n)
+shared/     Types + seeded content + identity constants
+server/     Express API (auth, content, messages, uploads)
+data/       JSON database (db.json) + uploads
+public/     Static assets (images, cv.pdf)
+```
+
+## License
+
+MIT — see the repository.

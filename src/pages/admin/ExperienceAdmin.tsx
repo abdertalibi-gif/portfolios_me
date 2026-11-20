@@ -51,7 +51,7 @@ export default function ExperienceAdmin() {
       const { content } = await api.getAdminContent();
       setItems(content.experiences);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Impossible de charger les expériences");
+      setError(loadError instanceof Error ? loadError.message : "Impossible de charger les projets");
     } finally {
       setLoading(false);
     }
@@ -86,7 +86,7 @@ export default function ExperienceAdmin() {
     event.preventDefault();
     setFormError("");
     if (!Object.values(form.role).some((value) => value.trim())) {
-      setFormError("Ajoutez un intitulé de poste dans au moins une langue.");
+      setFormError("Ajoutez un intitulé de projet dans au moins une langue.");
       return;
     }
     setSaving(true);
@@ -94,7 +94,7 @@ export default function ExperienceAdmin() {
       if (editing) await api.updateExperience(editing.id, form);
       else await api.createExperience(form);
       setModalOpen(false);
-      setNotice(editing ? "Expérience mise à jour." : "Expérience ajoutée avec succès.");
+      setNotice(editing ? "Projet mis à jour." : "Projet ajouté avec succès.");
       await load();
       await refreshPublic();
     } catch (saveError) {
@@ -110,7 +110,7 @@ export default function ExperienceAdmin() {
     try {
       await api.deleteExperience(deleting.id);
       setDeleting(null);
-      setNotice("Expérience supprimée.");
+      setNotice("Projet supprimé.");
       await load();
       await refreshPublic();
     } catch (deleteError) {
@@ -128,12 +128,12 @@ export default function ExperienceAdmin() {
       className="space-y-5"
     >
       <PageHeader
-        eyebrow="Parcours"
-        title="Gestion des expériences"
-        description="Ajoutez et organisez vos expériences professionnelles et missions avec détails traduits."
+        eyebrow="Parcours académique"
+        title="Gestion des projets académiques"
+        description="Ajoutez et organisez vos projets académiques et personnels, avec détails traduits."
         actions={
           <Button icon={Plus} onClick={openCreate}>
-            Nouvelle expérience
+            Nouveau projet
           </Button>
         }
       />
@@ -147,9 +147,9 @@ export default function ExperienceAdmin() {
         <Panel>
           <EmptyState
             icon={Briefcase}
-            title="Aucune expérience enregistrée"
-            description="Ajoutez une expérience professionnelle pour enrichir votre parcours sur le portfolio."
-            action={<Button icon={Plus} onClick={openCreate}>Ajouter une expérience</Button>}
+            title="Aucun projet académique enregistré"
+            description="Ajoutez un projet académique ou personnel pour enrichir votre parcours sur le portfolio."
+            action={<Button icon={Plus} onClick={openCreate}>Ajouter un projet</Button>}
           />
         </Panel>
       ) : (
@@ -213,7 +213,7 @@ export default function ExperienceAdmin() {
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editing ? "Modifier l'expérience" : "Nouvelle expérience"}
+        title={editing ? "Modifier le projet" : "Nouveau projet"}
         wide
         footer={
           <>
@@ -228,14 +228,14 @@ export default function ExperienceAdmin() {
           {formError && <Alert type="error">{formError}</Alert>}
           <div className="grid gap-4 sm:grid-cols-2">
             <LocalizedField
-              label="Poste occupé"
+              label="Intitulé du projet"
               required
               value={form.role}
               onChange={(role) => setForm({ ...form, role })}
-              placeholder="Software Engineer & AI Developer"
+              placeholder="PrésenceQR — système de gestion des présences"
             />
             <LocalizedField
-              label="Entreprise / organisation"
+              label="Cadre / organisation"
               value={form.company}
               onChange={(company) => setForm({ ...form, company })}
               placeholder="Freelance / Tech Company"
@@ -249,7 +249,7 @@ export default function ExperienceAdmin() {
                 onChange={(event) => setForm({ ...form, period: event.target.value })}
               />
             </Field>
-            <Field label="Type d'emploi">
+            <Field label="Type de projet">
               <select
                 value={form.employmentType}
                 onChange={(event) => setForm({ ...form, employmentType: event.target.value })}
@@ -282,7 +282,7 @@ export default function ExperienceAdmin() {
 
       <ConfirmDialog
         open={Boolean(deleting)}
-        title="Supprimer cette expérience ?"
+        title="Supprimer ce projet ?"
         description={`« ${deleting?.role?.fr || deleting?.role?.en || ""} » sera retirée du portfolio.`}
         loading={deletingBusy}
         onCancel={() => setDeleting(null)}

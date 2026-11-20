@@ -8,8 +8,8 @@ import type {
   Project,
   Skill,
   SkillCategory,
-} from "./types";
-import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "./site";
+} from "./types.ts";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "./site.ts";
 
 const loc = (en: string, fr: string, de: string, ar: string) => ({ en, fr, de, ar });
 const now = new Date().toISOString();
