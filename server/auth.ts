@@ -1,10 +1,10 @@
 import { randomBytes } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import { COOKIE_SECURE, SESSION_TTL_MS } from "./env";
-import { getAdminPublic, getDb, verifyPassword } from "./store";
+import { getAdminPublic, getDb, verifyPassword, syncSessionToDB, removeSessionFromDB, getSessions, loadSessionsFromDb } from "./store";
 
 const COOKIE_NAME = "at_admin_session";
-const sessions = new Map<string, { email: string; expires: number }>();
+const sessions = getSessions();
 
 export function parseCookies(header: string | undefined): Record<string, string> {
   const cookies: Record<string, string> = {};
@@ -55,14 +55,18 @@ function getValidSession(req: Request): { email: string; token: string } | null 
   return { email: session.email, token };
 }
 
-export function createSession(email: string): string {
+export function createSession(email: string, ttlMs: number = SESSION_TTL_MS): string {
   const token = randomBytes(32).toString("hex");
-  sessions.set(token, { email, expires: Date.now() + SESSION_TTL_MS });
+  sessions.set(token, { email, expires: Date.now() + ttlMs });
+  syncSessionToDB(token, email, ttlMs);
   return token;
 }
 
 export function destroySession(token: string | null): void {
-  if (token) sessions.delete(token);
+  if (token) {
+    sessions.delete(token);
+    removeSessionFromDB(token);
+  }
 }
 
 export function invalidateSessionsExcept(token: string | null): void {
