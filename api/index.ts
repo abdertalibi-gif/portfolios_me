@@ -1,11 +1,20 @@
+import { createApiApp } from "../server/app.js";
+
 let app: any;
+let initError: any = null;
 try {
-  const { createApiApp } = await import("../server/app.js");
   app = createApiApp();
 } catch (err: any) {
-  console.error("createApiApp failed:", err);
-  const express = (await import("express")).default;
-  app = express();
-  app.all("*", (_req: any, res: any) => res.status(500).json({ error: err?.message || String(err), stack: err?.stack }));
+  console.error("createApiApp failed:", err?.message, err?.stack);
+  initError = err;
 }
-export default app;
+
+export default function handler(req: any, res: any) {
+  if (initError) {
+    return res.status(500).json({ error: "init failed", message: initError?.message, stack: initError?.stack });
+  }
+  if (!app) {
+    return res.status(500).json({ error: "app not initialized" });
+  }
+  return app(req, res);
+}
