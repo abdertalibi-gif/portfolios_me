@@ -1,3 +1,5 @@
+import { createApiApp } from "../server/app";
+
 export default function handler(req: any, res: any) {
-  res.status(200).json({ ok: true, msg: "hello from vercel" });
+  res.status(200).json({ ok: true, msg: "imported createApiApp", type: typeof createApiApp });
 }
