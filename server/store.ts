@@ -4,9 +4,9 @@
  * Source de vérité : Neon PostgreSQL (tables admins, admin_sessions,
  * portfolio_content, contact_messages).
  *
- * L'interface synchrone (getDb/persist) est conservée pour ne pas réécrire
- * toutes les routes de server/app.ts : un cache en mémoire est hydraté depuis
- * PostgreSQL au démarrage (cold start) et les écritures sont persistées en async.
+ * Interface synchrone (getDb/persist) conservée : cache en mémoire hydraté
+ * depuis PostgreSQL via ensureLoaded() (appelé au démarrage du serveur).
+ * Aucun appel DB au niveau module (compatible build Vite).
  */
 import { Pool } from "pg";
 import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
@@ -29,7 +29,7 @@ export interface Database {
   messages: Message[];
 }
 
-// ---------- Pool PostgreSQL (lazy, ne plante pas si DATABASE_URL absent) ----------
+// ---------- Pool PostgreSQL (lazy) ----------
 let pool: Pool | null = null;
 function getPool(): Pool | null {
   if (!process.env.DATABASE_URL) return null;
@@ -48,7 +48,7 @@ export function hasDatabase(): boolean {
   return !!process.env.DATABASE_URL;
 }
 
-// ---------- Hash mot de passe (scrypt) ----------
+// ---------- Hash mot de passe ----------
 export function hashPassword(password: string, salt: string): string {
   return scryptSync(password, salt, 64).toString("hex");
 }
@@ -75,7 +75,7 @@ interface CacheShape {
 }
 const cache: CacheShape = {
   admin: {
-    email: process.env.ADMIN_EMAIL || "talibi.abder@gmail.com",
+    email: (process.env.ADMIN_EMAIL || "talibi.abder@gmail.com").trim().toLowerCase(),
     passwordHash: "",
     salt: "",
     updatedAt: new Date().toISOString(),
@@ -89,12 +89,10 @@ const cache: CacheShape = {
 async function loadFromDb(): Promise<void> {
   const p = getPool();
   if (!p) {
-    // Pas de DATABASE_URL : on garde le seed (mode dégradé, pas de persistance)
     cache.loaded = true;
     return;
   }
   try {
-    // Admin
     const adminRes = await p.query("SELECT email, password_hash, salt, updated_at FROM admins ORDER BY id LIMIT 1");
     if (adminRes.rows.length > 0) {
       const r = adminRes.rows[0];
@@ -105,7 +103,6 @@ async function loadFromDb(): Promise<void> {
         updatedAt: r.updated_at ? new Date(r.updated_at).toISOString() : new Date().toISOString(),
       };
     } else {
-      // Créer l'admin initial si la table est vide
       const email = (process.env.ADMIN_EMAIL || "talibi.abder@gmail.com").trim().toLowerCase();
       const password = process.env.ADMIN_PASSWORD || "";
       if (password && password.length >= 8) {
@@ -119,13 +116,11 @@ async function loadFromDb(): Promise<void> {
       }
     }
 
-    // Contenu
     const contentRes = await p.query("SELECT content FROM portfolio_content WHERE id = 'main' LIMIT 1");
     if (contentRes.rows.length > 0 && contentRes.rows[0].content) {
       cache.content = contentRes.rows[0].content as PortfolioContent;
     }
 
-    // Messages
     const msgRes = await p.query(
       "SELECT id, name, email, subject, message, is_read, created_at FROM contact_messages ORDER BY created_at DESC"
     );
@@ -145,18 +140,13 @@ async function loadFromDb(): Promise<void> {
   }
 }
 
-// Hydratation au démarrage (non bloquante)
-cache.loading = loadFromDb();
-
 export async function ensureLoaded(): Promise<void> {
-  if (cache.loading) await cache.loading;
-  if (!cache.loaded) {
-    cache.loading = loadFromDb();
-    await cache.loading;
-  }
+  if (cache.loaded) return;
+  if (!cache.loading) cache.loading = loadFromDb();
+  await cache.loading;
 }
 
-// ---------- Interface synchrone pour app.ts/auth.ts ----------
+// ---------- Interface synchrone ----------
 export function getDb(): Database {
   return {
     version: 1,
@@ -186,35 +176,7 @@ export function setPassword(password: string): { email: string; salt: string; pa
   return { email: cache.admin.email, salt, passwordHash };
 }
 
-export function verifyPasswordExport(password: string, admin: { email?: string; salt: string; passwordHash: string }): boolean {
-  return verifyPassword(password, admin);
-}
-
-// Persist (écrit le contenu + messages en PostgreSQL)
-export function persist(): void {
-  const p = getPool();
-  if (!p) return;
-  const snapshot = {
-    content: cache.content,
-    messages: cache.messages,
-  };
-  p.query(
-    "INSERT INTO portfolio_content (id, content, updated_at) VALUES ('main', $1, NOW()) ON CONFLICT (id) DO UPDATE SET content = $1, updated_at = NOW()",
-    [JSON.stringify(snapshot.content)]
-  ).catch((e) => console.error("[store] persist content error", e));
-
-  // Messages : upsert simple (insert nouveaux, update is_read)
-  for (const m of cache.messages) {
-    p.query(
-      `INSERT INTO contact_messages (id, name, email, subject, message, is_read, created_at)
-       VALUES ($1,$2,$3,$4,$5,$6,$7)
-       ON CONFLICT (id) DO UPDATE SET is_read = $6`,
-      [m.id, m.name, m.email, m.subject, m.message, m.read, m.createdAt]
-    ).catch((e) => console.error("[store] persist message error", e));
-  }
-}
-
-// ---------- Sessions admin (PostgreSQL, pas de Map permanente) ----------
+// ---------- Sessions ----------
 const memorySessions = new Map<string, { email: string; expires: number }>();
 
 export function syncSessionToDB(token: string, email: string, ttlMs: number): void {
@@ -241,7 +203,6 @@ export function getSessions(): Map<string, { email: string; expires: number }> {
   return memorySessions;
 }
 
-// Hydrate sessions depuis PG au démarrage
 export async function loadSessionsFromDb(): Promise<void> {
   const p = getPool();
   if (!p) return;
@@ -258,7 +219,7 @@ export async function loadSessionsFromDb(): Promise<void> {
   }
 }
 
-// ---------- Messages helpers ----------
+// ---------- Messages ----------
 export function getContactMessagesDB(): Message[] {
   return cache.messages;
 }
@@ -294,16 +255,27 @@ export function deleteMessageDB(messageId: string): void {
   }
 }
 
-// ---------- Compat exports ----------
-export { hashPassword };
+// ---------- Persist ----------
+export function persist(): void {
+  const p = getPool();
+  if (!p) return;
+  p.query(
+    "INSERT INTO portfolio_content (id, content, updated_at) VALUES ('main', $1, NOW()) ON CONFLICT (id) DO UPDATE SET content = $1, updated_at = NOW()",
+    [JSON.stringify(cache.content)]
+  ).catch((e) => console.error("[store] persist content error", e));
 
-// Export par défaut pour compatibilité avec l'ancien code
+  for (const m of cache.messages) {
+    p.query(
+      "INSERT INTO contact_messages (id, name, email, subject, message, is_read, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (id) DO UPDATE SET is_read = $6",
+      [m.id, m.name, m.email, m.subject, m.message, m.read, m.createdAt]
+    ).catch((e) => console.error("[store] persist message error", e));
+  }
+}
+
+// ---------- Compat exports ----------
 export default {
   version: 1 as const,
   get admin() { return cache.admin; },
   get content() { return cache.content; },
   get messages() { return cache.messages; },
 };
-
-// Note: UPLOADS_DIR / DATA_DIR sont ré-exportés pour compatibilité
-export { UPLOADS_DIR, DATA_DIR };

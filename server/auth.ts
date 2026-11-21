@@ -50,15 +50,16 @@ function getValidSession(req: Request): { email: string; token: string } | null 
   if (!session) return null;
   if (session.expires < Date.now()) {
     sessions.delete(token);
+    removeSessionFromDB(token);
     return null;
   }
   return { email: session.email, token };
 }
 
-export function createSession(email: string, ttlMs: number = SESSION_TTL_MS): string {
+export function createSession(email: string): string {
   const token = randomBytes(32).toString("hex");
-  sessions.set(token, { email, expires: Date.now() + ttlMs });
-  syncSessionToDB(token, email, ttlMs);
+  sessions.set(token, { email, expires: Date.now() + SESSION_TTL_MS });
+  syncSessionToDB(token, email, SESSION_TTL_MS);
   return token;
 }
 
@@ -70,8 +71,11 @@ export function destroySession(token: string | null): void {
 }
 
 export function invalidateSessionsExcept(token: string | null): void {
-  for (const key of sessions.keys()) {
-    if (key !== token) sessions.delete(key);
+  for (const key of [...sessions.keys()]) {
+    if (key !== token) {
+      sessions.delete(key);
+      removeSessionFromDB(key);
+    }
   }
 }
 
@@ -89,7 +93,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
 
 export function requireAdminHeader(req: Request, res: Response, next: NextFunction): void {
   if (req.get("x-admin-request") !== "1") {
-    res.status(403).json({ error: "Requête non autorisée" });
+    res.status(403).json({ error: "Requete non autorisee" });
     return;
   }
   next();
@@ -108,7 +112,7 @@ export function sameOriginGuard(req: Request, res: Response, next: NextFunction)
   try {
     const host = new URL(origin).host;
     if (host !== req.get("host")) {
-      res.status(403).json({ error: "Origine non autorisée" });
+      res.status(403).json({ error: "Origine non autorisee" });
       return;
     }
     next();
@@ -134,7 +138,7 @@ export function createRateLimiter(limit: number, windowMs: number) {
       return;
     }
     if (bucket.count >= limit) {
-      res.status(429).json({ error: "Trop de tentatives. Réessayez plus tard." });
+      res.status(429).json({ error: "Trop de tentatives. Reessayez plus tard." });
       return;
     }
     bucket.count += 1;
@@ -172,7 +176,7 @@ export function handleLogout(req: Request, res: Response): void {
 export function handleMe(_req: Request, res: Response): void {
   const session = getValidSession(_req);
   if (!session) {
-    res.status(401).json({ error: "Non authentifié" });
+    res.status(401).json({ error: "Non authentifie" });
     return;
   }
   res.json({ user: getAdminPublic() });
@@ -187,3 +191,5 @@ export function setSessionForEmail(res: Response, email: string): string {
   setSessionCookie(res, token);
   return token;
 }
+
+void loadSessionsFromDb();

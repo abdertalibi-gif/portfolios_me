@@ -26,7 +26,7 @@ import {
 } from "./auth";
 import { createResendEmail } from "./resend";
 import { ROOT_DIR, UPLOADS_DIR } from "./env";
-import { getAdminPublic, getDb, persist, setPassword, verifyPassword } from "./store";
+import { getAdminPublic, getDb, persist, setPassword, verifyPassword, ensureLoaded } from "./store";
 import {
   ApiError,
   asArray,
@@ -197,6 +197,16 @@ export function createApiApp(options: AppOptions = {}): express.Express {
 
   app.use(express.json({ limit: "1mb" }));
   app.use(sameOriginGuard);
+
+  // Hydrate le cache depuis PostgreSQL avant de traiter les requêtes
+  app.use(async (_req, _res, next) => {
+    try {
+      await ensureLoaded();
+    } catch (err) {
+      console.error("[api] ensureLoaded error:", err);
+    }
+    next();
+  });
 
   app.use(
     "/uploads",
@@ -438,7 +448,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
       const skill: Skill = {
         ...validateSkill((req.body || {}) as Record<string, unknown>),
         id: randomUUID(),
-        order: nextOrder(db.content.skills.filter((item) => item.categoryId === (req.body?.categoryId as string))),
+        order: nextOrder(db.content.skills.filter((item: Skill) => item.categoryId === (req.body?.categoryId as string))),
       };
       db.content.skills.push(skill);
       persist();
@@ -450,7 +460,7 @@ export function createApiApp(options: AppOptions = {}): express.Express {
     "/skills/:id",
     requireAdminHeader,
     handle((req, res) => {
-      const skill = getDb().content.skills.find((item) => item.id === req.params.id);
+      const skill = getDb().content.skills.find((item: Skill) => item.id === req.params.id);
       if (!skill) throw new ApiError("CompÃ©tence introuvable", 404);
       Object.assign(skill, validateSkill((req.body || {}) as Record<string, unknown>));
       persist();
