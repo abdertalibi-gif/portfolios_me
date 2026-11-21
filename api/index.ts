@@ -1,5 +1,5 @@
-import { createApiApp } from "../server/app";
+import express from "express";
 
 export default function handler(req: any, res: any) {
-  res.status(200).json({ ok: true, msg: "imported createApiApp", type: typeof createApiApp });
+  res.status(200).json({ ok: true, msg: "express imported", type: typeof express });
 }
