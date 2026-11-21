@@ -1,5 +1,5 @@
-import { Pool } from "pg";
+import { createApiApp } from "../server/app";
 
 export default function handler(req: any, res: any) {
-  res.status(200).json({ ok: true, msg: "pg imported", pool: typeof Pool });
+  res.status(200).json({ ok: true, msg: "app imported", type: typeof createApiApp });
 }
